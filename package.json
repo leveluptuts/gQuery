@@ -1,0 +1,32 @@
+{
+  "author": "Scott Tolinski",
+  "bugs": {
+    "url": "https://github.com/leveluptuts/gQuery/issues"
+  },
+  "dependencies": {
+    "camel-case": "^4.1.2",
+    "graphql": "^15.6.0",
+    "pascal-case": "^3.1.2",
+    "svelte": "^3.43.0"
+  },
+  "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
+  "exports": {
+    "./gfetch": "src/gfetch.js"
+  },
+  "homepage": "https://github.com/leveluptuts/gQuery#readme",
+  "keywords": [
+    "graphql"
+  ],
+  "license": "ISC",
+  "main": "src/index.js",
+  "name": "gquery",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leveluptuts/gQuery.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "version": "0.0.1"
+}
