@@ -1,6 +1,6 @@
 ![gQuery](./gQuery.png)
 
-# qQuery
+# gQuery
 
 ## Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit
 
