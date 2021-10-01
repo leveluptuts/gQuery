@@ -10,10 +10,6 @@ More information in this space soon. API is very much in flux rn.
 
 ### Preview
 
-## 🪄 Magic Mode
-
-Magic mode is the preferred way of using gQuery. Not because it's magical, but because it's easy.
-
 ### 1. Initialize G
 
 ```
@@ -26,7 +22,7 @@ export const g = new GFetch({
 
 docs coming soon
 
-### 3. Run GraphQL Codegen
+### 3. Add Codegen Config
 
 docs coming soon
 
@@ -48,64 +44,6 @@ docs coming soon
 
 <script lang="ts">
 	// Cache becomes populated with data available for SSR
-	import { gCache } from '@leveluptuts/gQuery'
-
-	// $: console.log($gCache.seriesList)
-</script>
-
-```
-
-## Manual Mode
-
-I guess if you want to do it this way you can.
-
-### 1. Initialize
-
-```
-export const g = new GFetch({
-	path: Environment.apiURL
-})
-```
-
-### 2. Create Fetch Function
-
-This is a function that run a gFetch. A gFetch is a simple graphql fetcher that accepts an array of queries and variables.
-The result of this function is your data. If you don't want the caching, you can just use this data directly.
-
-```
-const seriesList = ({ variables}) =>
-	g.fetch({
-		queries: [{ query: SeriesListDoc, variables }],
-	})
-
-```
-
-### 3. Cache and Fetch (optional)
-
-If you want the caching into `$gCache`, you can pass your fetch func into the cacher and send the data to $gcache instead of using it directly.
-Pass gQuery the query name, the fetch function and any variables you might have.
-
-```
-async function getSeriesList(variables) {
-	await gQuery('seriesList', { query: seriesList, variables })
-}
-```
-
-### 4. Use in Svelte Kit App
-
-```
-<script context="module" lang="ts">
-	import { getSeriesList } from '../whatever'
-
-	export async function load() {
-		await getSeriesList({
-			limit: 0
-		})
-		return {}
-	}
-</script>
-
-<script lang="ts">
 	import { gCache } from '@leveluptuts/gQuery'
 
 	// $: console.log($gCache.seriesList)
