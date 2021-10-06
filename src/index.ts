@@ -46,3 +46,5 @@ export async function gQuery(
     await gCache.hydrate(newData);
   }
 }
+
+export * from "./gFetch";

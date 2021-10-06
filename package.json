@@ -4,27 +4,37 @@
     "url": "https://github.com/leveluptuts/gQuery/issues"
   },
   "dependencies": {
+    "@graphql-codegen/cli": "^2.2.0",
     "camel-case": "^4.1.2",
-    "graphql": "^15.6.0",
     "pascal-case": "^3.1.2",
-    "svelte": "^3.43.0"
+    "svelte": "^3.43.1",
+    "vite": "^2.6.2"
   },
   "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
+  "devDependencies": {
+    "@graphql-codegen/plugin-helpers": "^2.1.1",
+    "@graphql-codegen/visitor-plugin-common": "^2.2.1",
+    "graphql": "^15.6.1",
+    "typescript": "^4.3.2"
+  },
   "exports": {
-    "./gfetch": "src/gfetch.js"
+    ".": "./dist/index.js",
+    "./codegen": "./codegen/plugin.js",
+    "./package.json": "./package.json"
   },
   "homepage": "https://github.com/leveluptuts/gQuery#readme",
   "keywords": [
     "graphql"
   ],
   "license": "ISC",
-  "main": "src/index.js",
-  "name": "gquery",
+  "name": "@leveluptuts/gQuery",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leveluptuts/gQuery.git"
   },
   "scripts": {
+    "dev": "tsc --watch",
+    "dev:codegen": "tsc -w --project codegen.tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
