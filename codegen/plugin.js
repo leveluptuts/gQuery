@@ -31,8 +31,10 @@ export default function levelupViteCodegen(options) {
     if (!options.output) {
         throw new Error("No output directory specified");
     }
-    const { schema, output } = options;
-    console.log(`${process.cwd()}/${output}/${outputFile}`);
+    if (!options.gPath) {
+        throw new Error("No gPath directory specified. gPath is where you've initialized the 'g' client");
+    }
+    const { schema, output, gPath } = options;
     return {
         name: "levelup-vite-codegen",
         async buildStart() {
@@ -44,23 +46,21 @@ export default function levelupViteCodegen(options) {
                         [`${process.cwd()}/${output}/gquery-types.generated.ts`]: {
                             plugins: ["typescript"],
                         },
-                        // [`${process.cwd()}/${output}/${outputFile}`]: {
-                        //   // preset: "import-types",
-                        //   // presetConfig: {
-                        //   //   typesPath: `${output}/${outputFile}`,
-                        //   // },
-                        //   // preset: "near-operation-file",
-                        //   // presetConfig: {
-                        //   //   extension: ".generated.ts",
-                        //   //   folder: "./",
-                        //   //   baseTypesPath: `${output}/${outputFile}`,
-                        //   // },
-                        //   plugins: [
-                        //     "typescript",
-                        //     //   "typescript-operations",
-                        //     "../packages/gQueryCodegen/codegen.js",
-                        //   ],
-                        // },
+                        [`${process.cwd()}/${output}`]: {
+                            config: {
+                                gPath,
+                            },
+                            preset: "near-operation-file",
+                            presetConfig: {
+                                extension: ".generated.ts",
+                                folder: "./",
+                                baseTypesPath: `gquery-types.generated.ts`,
+                            },
+                            plugins: [
+                                "typescript-operations",
+                                "@leveluptuts/g-query/codegen-plugin",
+                            ],
+                        },
                     },
                 }, true);
             }

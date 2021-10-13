@@ -44,7 +44,7 @@ docs coming soon
 
 <script lang="ts">
 	// Cache becomes populated with data available for SSR
-	import { gCache } from '@leveluptuts/gQuery'
+	import { gCache } from '@leveluptuts/g-query'
 
 	// $: console.log($gCache.seriesList)
 </script>
