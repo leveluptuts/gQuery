@@ -6,12 +6,7 @@ import {
   FragmentDefinitionNode,
   OperationDefinitionNode,
 } from "graphql";
-import {
-  Types,
-  PluginValidateFn,
-  PluginFunction,
-} from "@graphql-codegen/plugin-helpers";
-import type { CodegenPlugin } from "@graphql-codegen/plugin-helpers";
+import { Types, PluginFunction } from "@graphql-codegen/plugin-helpers";
 import {
   LoadedFragment,
   ClientSideBaseVisitor,
