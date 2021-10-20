@@ -23,8 +23,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./*": "./dist/index.js",
-    "./codegen": "./codegen/plugin.js",
-    "./codegen-plugin": "./codegen/codegen.js",
+    "./codegen": "./codegen/dist/plugin.js",
+    "./codegen-plugin": "./codegen/dist/codegen.js",
     "./package.json": "./package.json"
   },
   "homepage": "https://github.com/leveluptuts/gQuery#readme",
@@ -43,5 +43,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
-  "version": "0.0.3"
+  "version": "0.0.4"
 }
