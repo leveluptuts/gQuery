@@ -56,7 +56,7 @@ The code gen will find the file and spit out a file next to it. Named `FileName.
 Using the above code, it would output `UserQueries.gGenerated.ts`
 This also gives us a `get` function for queries based on the query name. ie `getUser` for the above.
 
-```
+```javascript
 <script context="module" lang="ts">
 	// The generated function that fetches and caches
 	import { getUser } from './UserQueries.gGenerated.graphql'
