@@ -1,9 +1,45 @@
+import { Kind, print, } from "graphql";
 import { readable, writable } from "svelte/store";
+import { formatDocument as addTypenameToDocument } from "./utils/format";
 // This function accepts a graphql document and returns a string to be used
 // in fetch calls
 export function gqlToString(tag) {
     return tag.loc.source.body;
 }
+/**
+ * Finds the Name value from the OperationDefinition of a Document
+ */
+export const getOperationName = (query) => {
+    for (let i = 0, l = query.definitions.length; i < l; i++) {
+        const node = query.definitions[i];
+        if (node.kind === Kind.OPERATION_DEFINITION && node.name) {
+            return node.name.value;
+        }
+    }
+};
+export const stringifyDocument = (node) => {
+    let str = (typeof node !== "string" ? print(node) : node)
+        .replace(/([\s,]|#[^\n\r]+)+/g, " ")
+        .trim();
+    //   if (typeof node !== "string") {
+    //     const operationName = "definitions" in node && getOperationName(node);
+    //     if (operationName) {
+    //       str = `# ${operationName}\n${str}`;
+    //     }
+    //     if (!node.loc) {
+    //       (node as WritableLocation).loc = {
+    //         start: 0,
+    //         end: str.length,
+    //         source: {
+    //           body: str,
+    //           name: "gql",
+    //           locationOffset: { line: 1, column: 1 },
+    //         },
+    //       } as Location;
+    //     }
+    //   }
+    return str;
+};
 export class GFetch extends Object {
     constructor(options) {
         super();
@@ -20,9 +56,11 @@ export class GFetch extends Object {
         if (!fetch && window) {
             fetch = window.fetch;
         }
+        let document = addTypenameToDocument(queries[0].query);
+        let documentString = stringifyDocument(document);
         const newQueries = {
             ...queries[0],
-            query: gqlToString(queries[0].query),
+            query: documentString,
         };
         // This is generic fetch, that is polyfilled via svelte kit
         // graph ql fetches must be POST
@@ -88,8 +126,6 @@ export class GFetch extends Object {
 export const data = writable();
 // ! IDEAS
 // Mutations should take care of updating a generated writeable.
-// import { tutorial } from '$graphql/state'
-// import { updateTutorial } from '$graphql/gfetch.generated'
 // updateTutorial()
 // $tutorial is auto updated site wide
 // Devtools based on svelte toy

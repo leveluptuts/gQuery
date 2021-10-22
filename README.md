@@ -20,23 +20,52 @@ export const g = new GFetch({
 
 ### 2. Add GraphQL Codegen Plugin
 
-docs coming soon
+```
+svelte.config.js
 
-### 3. Add Codegen Config
+import gQueryCodegen from '@leveluptuts/g-query/codegen'
 
-docs coming soon
+...
+	plugins: [
+		gQueryCodegen({
+			schema: './src/lib/graphql/schema.graphql', // path to schema, schema is required
+			output: './src/lib/graphql', // Where you want the general schema types to output
+			gPath: '$lib/config/g' //Path to g, created in step 1.
+		})
+	],
+...
+```
+
+### 3. Add .graphql files
+
+```
+UserQueries.graphql
+
+query user {
+	user {
+		_id
+	}
+}
+
+
+```
 
 ### 4. Use that thang
+
+The code gen will find the file and spit out a file next to it. Named `FileName.gGenerated.ts`
+Using the above code, it would output `UserQueries.gGenerated.ts`
+This also gives us a `get` function for queries based on the query name. ie `getUser` for the above.
 
 ```
 <script context="module" lang="ts">
 	// The generated function that fetches and caches
-	import { getSeriesList } from '../whatever'
+	import { getUser } from '../whatever'
 
-	export async function load() {
+	export async function load({fetch}) {
 		// Runs the cache/fetch function populating $gCache before use.
-		await getSeriesList({
-			limit: 0
+		await getUser({
+			variables: { limit: 0 },
+			fetch
 		})
 		return {}
 	}
@@ -44,9 +73,9 @@ docs coming soon
 
 <script lang="ts">
 	// Cache becomes populated with data available for SSR
-	import { gCache } from '@leveluptuts/g-query'
+	import { user } from './UserQueries.gGenerated.graphql'
 
-	// $: console.log($gCache.seriesList)
+	// $: console.log($user) //data available for ssr
 </script>
 
 ```

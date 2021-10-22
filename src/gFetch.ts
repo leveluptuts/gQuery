@@ -1,6 +1,14 @@
-import type { DocumentNode } from "graphql/language/ast";
+import {
+  Location,
+  DefinitionNode,
+  DocumentNode,
+  Kind,
+  parse,
+  print,
+} from "graphql";
 import { readable, writable } from "svelte/store";
 import type { Readable } from "svelte/store";
+import { formatDocument as addTypenameToDocument } from "./utils/format";
 
 // What's the deal with *gFetch*?
 // gFetch is a 0 dependency fetcher for graphql that accepts a custom fetch function
@@ -56,6 +64,51 @@ export function gqlToString(tag: DocumentNode): string {
   return tag.loc.source.body;
 }
 
+/**
+ * Finds the Name value from the OperationDefinition of a Document
+ */
+export const getOperationName = (query: DocumentNode): string | undefined => {
+  for (let i = 0, l = query.definitions.length; i < l; i++) {
+    const node = query.definitions[i];
+    if (node.kind === Kind.OPERATION_DEFINITION && node.name) {
+      return node.name.value;
+    }
+  }
+};
+
+interface WritableLocation {
+  loc: Location | undefined;
+}
+
+export const stringifyDocument = (
+  node: string | DefinitionNode | DocumentNode
+): string => {
+  let str = (typeof node !== "string" ? print(node) : node)
+    .replace(/([\s,]|#[^\n\r]+)+/g, " ")
+    .trim();
+
+  //   if (typeof node !== "string") {
+  //     const operationName = "definitions" in node && getOperationName(node);
+  //     if (operationName) {
+  //       str = `# ${operationName}\n${str}`;
+  //     }
+
+  //     if (!node.loc) {
+  //       (node as WritableLocation).loc = {
+  //         start: 0,
+  //         end: str.length,
+  //         source: {
+  //           body: str,
+  //           name: "gql",
+  //           locationOffset: { line: 1, column: 1 },
+  //         },
+  //       } as Location;
+  //     }
+  //   }
+
+  return str;
+};
+
 type gFetchProperties = {
   queries: GFetchQueries[];
   fetch: typeof fetch;
@@ -71,6 +124,11 @@ export type ApolloClient = {
 export type GFetchReturn<T> = {
   data: T;
   errors?: Error;
+};
+
+export type GGetParameters<Variables> = {
+  variables?: Variables;
+  fetch: typeof fetch;
 };
 
 export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
@@ -97,9 +155,11 @@ export class GFetch extends Object {
     if (!fetch && window) {
       fetch = window.fetch;
     }
+    let document: DocumentNode = addTypenameToDocument(queries[0].query);
+    let documentString: string = stringifyDocument(document);
     const newQueries = {
       ...queries[0],
-      query: gqlToString(queries[0].query),
+      query: documentString,
     };
 
     // This is generic fetch, that is polyfilled via svelte kit
@@ -178,8 +238,6 @@ export const data = writable();
 
 // ! IDEAS
 // Mutations should take care of updating a generated writeable.
-// import { tutorial } from '$graphql/state'
-// import { updateTutorial } from '$graphql/gfetch.generated'
 // updateTutorial()
 // $tutorial is auto updated site wide
 // Devtools based on svelte toy

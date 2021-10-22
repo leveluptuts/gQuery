@@ -7,24 +7,17 @@ import {
   OperationDefinitionNode,
 } from "graphql";
 import { Types, PluginFunction } from "@graphql-codegen/plugin-helpers";
-import {
-  LoadedFragment,
-  ClientSideBaseVisitor,
-} from "@graphql-codegen/visitor-plugin-common";
-
-import { pascalCase } from "pascal-case";
-
-console.log("codegen.ts");
+import { ClientSideBaseVisitor } from "@graphql-codegen/visitor-plugin-common";
+import pascalCase from "just-pascal-case";
 
 export const plugin: PluginFunction<any> = (
   schema: GraphQLSchema,
   documents: Types.DocumentFile[],
   config
 ) => {
-  console.log("config", config);
   const allAst = concatAST(documents.map((d) => d.document));
 
-  const allFragments: LoadedFragment[] = [
+  const allFragments = [
     ...(
       allAst.definitions.filter(
         (d) => d.kind === Kind.FRAGMENT_DEFINITION
@@ -50,6 +43,7 @@ export const plugin: PluginFunction<any> = (
   const operations = allAst.definitions.filter(
     (d) => d.kind === Kind.OPERATION_DEFINITION
   ) as OperationDefinitionNode[];
+
   const defaultTypes = `
 
 type FetchWrapperArgs<T> = {
@@ -74,24 +68,32 @@ interface CacheFunctionOptions {
         // const dsl = `export const ${pascalCase(op.name.value)}Doc = gql\`
         // ${documents.find((d) => d.rawSDL.includes(`${op.operation} ${op.name.value}`)).rawSDL}\``
         const op = `${pascalCase(name)}${pascalCase(o.operation)}`;
+        const pascalName = pascalCase(name);
         const opv = `${op}Variables`;
         let operations = "";
 
         if (o.operation === "query") {
           operations += `
+export const ${name}Store = writable()
+
 export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 	Promise<GFetchReturnWithErrors<${op}>> =>
 		g.fetch<${op}>({
-			queries: [{ query: ${pascalCase(name)}Doc, variables }],
+			queries: [{ query: ${pascalName}Doc, variables }],
 			fetch
 		})
 
 
-		// Cached
-		export async function get${pascalCase(
-      name
-    )}(variables, options?: CacheFunctionOptions) {
-	await gQuery('user', { query: ${name}, variables }, options)
+// Cached
+export async function get${pascalCase(
+            name
+          )}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
+	const data = await g.fetch<${op}>({
+		queries: [{ query: ${pascalName}Doc, variables }],
+		fetch
+	})
+	await ${name}Store.set({ ...data})	
+	await gQuery(${name}, { query: ${name}, variables }, options)
 }
 
 `;
@@ -101,7 +103,7 @@ export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 export const ${name}Subscribe = ({ variables }: SubscribeWrapperArgs<${opv}>):
 Readable<GFetchReturnWithErrors<${op}>> =>
 		g.oFetch<${op}>({
-			queries: [{ query: ${pascalCase(name)}Doc, variables }]
+			queries: [{ query: ${pascalName}Doc, variables }]
 		})
 	`;
           }
@@ -110,7 +112,7 @@ Readable<GFetchReturnWithErrors<${op}>> =>
 export const ${name} = ({ variables }: SubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
 	g.fetch<${op}>({
-		queries: [{ query: ${pascalCase(name)}Doc, variables }],
+		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch,
 	})
 `;
@@ -123,39 +125,12 @@ Promise<GFetchReturnWithErrors<${op}>> =>
 
   const imports = [
     `import type { Readable } from "svelte/store"`,
+    `import { writable } from "svelte/store"`,
     `import { g } from '${config.gPath}'`,
-    `import type { GFetchReturnWithErrors } from '@leveluptuts/g-query'`,
+    `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
     `import { gQuery } from '@leveluptuts/g-query'`,
     `import gql from "graphql-tag"`,
   ];
-
-  //     let schemaInputs = getCachedDocumentNodeFromSchema(schema).definitions.filter((d) => {
-  //       return d.kind === 'InputObjectTypeDefinition'
-  //     })
-  //     let inputs = schemaInputs
-  //       .map((d) => {
-  //         console.log('/* START */')
-  //         // @ts-ignore
-  //         console.log('NAME: ', d.fields[0].name.value)
-  //         // @ts-ignore
-  //         let isReq = d.fields[0]?.type?.kind === 'NonNullType'
-  //         console.log('REQUIRED: ', isReq ? '✅' : '❌')
-  //         // @ts-ignore
-  //         console.log('TYPE: ', isReq ? d.fields[0]?.type?.type?.name?.value : d.fields[0]?.type?.name?.value)
-  //         // @ts-ignore
-  //         // @ts-ignore
-  //         console.log('d.fields[0]', d.fields[0]?.type)
-  //         console.log('/* END */')
-  //         console.log('')
-
-  //         return `
-  // const inputName = {
-  // 	${d.fields[0].name.value}: ${isReq ? d.fields[0]?.type?.type?.name?.value : d.fields[0]?.type?.name?.value}
-  // }
-  // 		`
-  //       })
-  //       .join('\n')
-  //     console.log('inputs', inputs)
 
   return {
     prepend: imports,
