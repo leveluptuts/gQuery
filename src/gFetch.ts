@@ -86,26 +86,6 @@ export const stringifyDocument = (
   let str = (typeof node !== "string" ? print(node) : node)
     .replace(/([\s,]|#[^\n\r]+)+/g, " ")
     .trim();
-
-  //   if (typeof node !== "string") {
-  //     const operationName = "definitions" in node && getOperationName(node);
-  //     if (operationName) {
-  //       str = `# ${operationName}\n${str}`;
-  //     }
-
-  //     if (!node.loc) {
-  //       (node as WritableLocation).loc = {
-  //         start: 0,
-  //         end: str.length,
-  //         source: {
-  //           body: str,
-  //           name: "gql",
-  //           locationOffset: { line: 1, column: 1 },
-  //         },
-  //       } as Location;
-  //     }
-  //   }
-
   return str;
 };
 
@@ -141,7 +121,6 @@ export class GFetch extends Object {
     const { path } = options;
     this.path = path;
     this.fetch = this.fetch.bind(this);
-    this.oFetch = this.oFetch.bind(this);
   }
 
   // * gFetch
@@ -149,12 +128,7 @@ export class GFetch extends Object {
   public async fetch<T>({
     queries,
     fetch,
-  }: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
-    // Get all the queries and transform the docs into strings
-    // Fetching gql require them to be strings.
-    if (!fetch && window) {
-      fetch = window.fetch;
-    }
+  }: gFetchProperties | {} = {}): Promise<GFetchReturnWithErrors<T>> {
     let document: DocumentNode = addTypenameToDocument(queries[0].query);
     let documentString: string = stringifyDocument(document);
     const newQueries = {
@@ -179,65 +153,64 @@ export class GFetch extends Object {
       ...data.data,
     } as GFetchReturnWithErrors<T>;
   }
-
-  // * ogFetch
-  // This function is a fetcher that returns a svelte readable subscription
-  // This is to be used for client side fetching of data
-  public oFetch<F>({
-    queries,
-  }: {
-    queries: GFetchQueries[];
-  }): Readable<GFetchReturnWithErrors<F>> {
-    // 1. Build the store and initialize it as empty and error free
-    const initial = new Map();
-    // Creates a store that will be used to subscribe to the data
-    const store = readable(initial, this.makeSubscribe(initial, queries));
-    return store as unknown as Readable<GFetchReturnWithErrors<F>>;
-  }
-
-  // A dummy function that is used to make subscribe happy.
-  private unsubscribe() {
-    // Nothing to do in this case
-  }
-
-  // Part of ogFetch
-  // Designed this way to work will with Svelte's readable store
-  private makeSubscribe(data, queries) {
-    // Create a closure with access to the
-    // initial data and initialization arguments
-    return (set) => {
-      // 3. This won't get executed until the store has
-      // its first subscriber. Kick off retrieval.
-      this.fetchDataForSubscription(data, set, queries);
-
-      // We're not waiting for the response.
-      // Return the unsubscribe function which doesn't do
-      // do anything here (but is part of the stores protocol).
-      return this.unsubscribe;
-    };
-  }
-
-  // Part of ogFetch
-  // Runs gFetch and updates subscription
-  private async fetchDataForSubscription(data, set, queries: GFetchQueries[]) {
-    try {
-      // Dispatch the request for the users
-      // This code is ONLY run client side, so fetch comes globally from the browser
-      const response = await this.fetch({ queries, fetch });
-      set(response);
-    } catch (error) {
-      // 6b. if there is a fetch error - deal with it
-      // and let observers know
-      data.error = error;
-      set(data);
-    }
-  }
 }
 
-export const data = writable();
+// * ogFetch
+// This function is a fetcher that returns a svelte readable subscription
+// This is to be used for client side fetching of data
+//   public oFetch<F>({
+//     queries,
+//   }: {
+//     queries: GFetchQueries[];
+//   }): Readable<GFetchReturnWithErrors<F>> {
+//     // 1. Build the store and initialize it as empty and error free
+//     const initial = new Map();
+//     // Creates a store that will be used to subscribe to the data
+//     const store = readable(initial, this.makeSubscribe(initial, queries));
+//     return store as unknown as Readable<GFetchReturnWithErrors<F>>;
+//   }
+
+//   // A dummy function that is used to make subscribe happy.
+//   private unsubscribe() {
+//     // Nothing to do in this case
+//   }
+
+//   // Part of ogFetch
+//   // Designed this way to work will with Svelte's readable store
+//   private makeSubscribe(data, queries) {
+//     // Create a closure with access to the
+//     // initial data and initialization arguments
+//     return (set) => {
+//       // 3. This won't get executed until the store has
+//       // its first subscriber. Kick off retrieval.
+//       this.fetchDataForSubscription(data, set, queries);
+
+//       // We're not waiting for the response.
+//       // Return the unsubscribe function which doesn't do
+//       // do anything here (but is part of the stores protocol).
+//       return this.unsubscribe;
+//     };
+//   }
+
+//   // Part of ogFetch
+//   // Runs gFetch and updates subscription
+//   private async fetchDataForSubscription(data, set, queries: GFetchQueries[]) {
+//     try {
+//       // Dispatch the request for the users
+//       // This code is ONLY run client side, so fetch comes globally from the browser
+//       const response = await this.fetch({ queries, fetch });
+//       set(response);
+//     } catch (error) {
+//       // 6b. if there is a fetch error - deal with it
+//       // and let observers know
+//       data.error = error;
+//       set(data);
+//     }
+//   }
+// }
+
+// export const data = writable();
 
 // ! IDEAS
 // Mutations should take care of updating a generated writeable.
-// updateTutorial()
 // $tutorial is auto updated site wide
-// Devtools based on svelte toy

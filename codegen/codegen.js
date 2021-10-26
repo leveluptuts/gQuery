@@ -1,8 +1,9 @@
 import { visit, concatAST, Kind, } from "graphql";
 import "@graphql-codegen/plugin-helpers";
-import { ClientSideBaseVisitor } from "@graphql-codegen/visitor-plugin-common";
+import { ClientSideBaseVisitor, } from "@graphql-codegen/visitor-plugin-common";
 import pascalCase from "just-pascal-case";
 export const plugin = (schema, documents, config) => {
+    console.log("🛠️ Codegen Starting");
     const allAst = concatAST(documents.map((d) => d.document));
     const allFragments = [
         ...allAst.definitions.filter((d) => d.kind === Kind.FRAGMENT_DEFINITION).map((fragmentDef) => ({
@@ -13,7 +14,7 @@ export const plugin = (schema, documents, config) => {
         })),
         ...(config.externalFragments || []),
     ];
-    const visitor = new ClientSideBaseVisitor(schema, allFragments, {}, { documentVariableSuffix: "Doc" }, documents);
+    const visitor = new ClientSideBaseVisitor(schema, allFragments, config, { documentVariableSuffix: "Doc" }, documents);
     const visitorResult = visit(allAst, { leave: visitor });
     const operations = allAst.definitions.filter((d) => d.kind === Kind.OPERATION_DEFINITION);
     const defaultTypes = `
@@ -27,6 +28,7 @@ type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
 
+
 interface CacheFunctionOptions {
 	update?: boolean
 }
@@ -35,20 +37,18 @@ interface CacheFunctionOptions {
     const ops = operations
         .map((o) => {
         var _a;
-        console.log("o", o.selectionSet.selections);
         if (o) {
+            console.log("o", o);
             const name = ((_a = o === null || o === void 0 ? void 0 : o.name) === null || _a === void 0 ? void 0 : _a.value) || "";
-            // const dsl = `export const ${pascalCase(op.name.value)}Doc = gql\`
-            // ${documents.find((d) => d.rawSDL.includes(`${op.operation} ${op.name.value}`)).rawSDL}\``
             const op = `${pascalCase(name)}${pascalCase(o.operation)}`;
             const pascalName = pascalCase(name);
             const opv = `${op}Variables`;
             let operations = "";
             if (o.operation === "query") {
                 operations += `
-export const ${name}Store = writable()
+export const ${name} = writable<${op}>()
 
-export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
+export const fetch${pascalName} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 	Promise<GFetchReturnWithErrors<${op}>> =>
 		g.fetch<${op}>({
 			queries: [{ query: ${pascalName}Doc, variables }],
@@ -56,29 +56,17 @@ export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 		})
 
 
-		// Cached
-		export async function get${pascalCase(name)}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
+// Cached
+export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
 	const data = await g.fetch<${op}>({
 		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch
 	})
-	await ${name}Store.set({ ...data})
-
-		
-	await gQuery(${name}, { query: ${name}, variables }, options)
+	await ${name}.set({ ...data, error: data?.error, gQueryStatus: 'LOADED' })	
+	return data
 }
 
 `;
-                // If config is set to have subscription query, also write the
-                if (config.subscriptionQuery) {
-                    operations += `
-export const ${name}Subscribe = ({ variables }: SubscribeWrapperArgs<${opv}>):
-Readable<GFetchReturnWithErrors<${op}>> =>
-		g.oFetch<${op}>({
-			queries: [{ query: ${pascalName}Doc, variables }]
-		})
-	`;
-                }
             }
             else if (o.operation === "mutation") {
                 operations += `
@@ -95,41 +83,13 @@ Promise<GFetchReturnWithErrors<${op}>> =>
     })
         .join("\n");
     const imports = [
-        `import type { Readable } from "svelte/store"`,
         `import { writable } from "svelte/store"`,
+        `import type { Writable } from "svelte/store"`,
         `import { g } from '${config.gPath}'`,
         `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
-        `import { gQuery } from '@leveluptuts/g-query'`,
-        `import gql from "graphql-tag"`,
     ];
-    //     let schemaInputs = getCachedDocumentNodeFromSchema(schema).definitions.filter((d) => {
-    //       return d.kind === 'InputObjectTypeDefinition'
-    //     })
-    //     let inputs = schemaInputs
-    //       .map((d) => {
-    //         console.log('/* START */')
-    //         // @ts-ignore
-    //         console.log('NAME: ', d.fields[0].name.value)
-    //         // @ts-ignore
-    //         let isReq = d.fields[0]?.type?.kind === 'NonNullType'
-    //         console.log('REQUIRED: ', isReq ? '✅' : '❌')
-    //         // @ts-ignore
-    //         console.log('TYPE: ', isReq ? d.fields[0]?.type?.type?.name?.value : d.fields[0]?.type?.name?.value)
-    //         // @ts-ignore
-    //         // @ts-ignore
-    //         console.log('d.fields[0]', d.fields[0]?.type)
-    //         console.log('/* END */')
-    //         console.log('')
-    //         return `
-    // const inputName = {
-    // 	${d.fields[0].name.value}: ${isReq ? d.fields[0]?.type?.type?.name?.value : d.fields[0]?.type?.name?.value}
-    // }
-    // 		`
-    //       })
-    //       .join('\n')
-    //     console.log('inputs', inputs)
     return {
-        prepend: imports,
+        prepend: [...imports, ...visitor.getImports()],
         content: [
             defaultTypes,
             visitor.fragments,
@@ -138,4 +98,7 @@ Promise<GFetchReturnWithErrors<${op}>> =>
         ].join("\n"),
     };
 };
+// TODO
+// - add option to force update of cache. ie getUserTutorials({update: true})
+// if update.true is not set, then it will only update if the cache is empty
 //# sourceMappingURL=codegen.js.map

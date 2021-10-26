@@ -16,10 +16,15 @@ export default function levelupViteCodegen(options) {
 
   const { schema, output, gPath } = options;
 
+  console.log("running plugin");
   return {
     name: "g-query-codegen",
     async buildStart() {
       try {
+        //   *1. Remove all .gGenerated files
+        // TODO: Find and remove all .gGenerated files
+        //   *2. Generate
+
         await generate(
           {
             schema,
@@ -32,7 +37,10 @@ export default function levelupViteCodegen(options) {
               // * Generates near file .ts files for your fetch functions
               [`${process.cwd()}/${output}`]: {
                 config: {
+                  useTypeImports: true,
                   gPath,
+                  importDocumentNodeExternallyFrom: "near-operation-file",
+                  inlineFragmentTypes: "combine",
                 },
                 preset: "near-operation-file",
                 presetConfig: {

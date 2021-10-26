@@ -7,7 +7,10 @@ import {
   OperationDefinitionNode,
 } from "graphql";
 import { Types, PluginFunction } from "@graphql-codegen/plugin-helpers";
-import { ClientSideBaseVisitor } from "@graphql-codegen/visitor-plugin-common";
+import {
+  ClientSideBaseVisitor,
+  LoadedFragment,
+} from "@graphql-codegen/visitor-plugin-common";
 import pascalCase from "just-pascal-case";
 
 export const plugin: PluginFunction<any> = (
@@ -15,9 +18,11 @@ export const plugin: PluginFunction<any> = (
   documents: Types.DocumentFile[],
   config
 ) => {
+  console.log("🛠️ Codegen Starting");
+
   const allAst = concatAST(documents.map((d) => d.document));
 
-  const allFragments = [
+  const allFragments: LoadedFragment[] = [
     ...(
       allAst.definitions.filter(
         (d) => d.kind === Kind.FRAGMENT_DEFINITION
@@ -34,7 +39,7 @@ export const plugin: PluginFunction<any> = (
   const visitor = new ClientSideBaseVisitor(
     schema,
     allFragments,
-    {},
+    config,
     { documentVariableSuffix: "Doc" },
     documents
   );
@@ -55,6 +60,7 @@ type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
 
+
 interface CacheFunctionOptions {
 	update?: boolean
 }
@@ -64,9 +70,8 @@ interface CacheFunctionOptions {
   const ops = operations
     .map((o) => {
       if (o) {
+        console.log("o", o);
         const name = o?.name?.value || "";
-        // const dsl = `export const ${pascalCase(op.name.value)}Doc = gql\`
-        // ${documents.find((d) => d.rawSDL.includes(`${op.operation} ${op.name.value}`)).rawSDL}\``
         const op = `${pascalCase(name)}${pascalCase(o.operation)}`;
         const pascalName = pascalCase(name);
         const opv = `${op}Variables`;
@@ -74,9 +79,9 @@ interface CacheFunctionOptions {
 
         if (o.operation === "query") {
           operations += `
-export const ${name}Store = writable()
+export const ${name} = writable<${op}>()
 
-export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
+export const fetch${pascalName} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 	Promise<GFetchReturnWithErrors<${op}>> =>
 		g.fetch<${op}>({
 			queries: [{ query: ${pascalName}Doc, variables }],
@@ -85,28 +90,16 @@ export const ${name} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
 
 
 // Cached
-export async function get${pascalCase(
-            name
-          )}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
+export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
 	const data = await g.fetch<${op}>({
 		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch
 	})
-	await ${name}Store.set({ ...data})	
-	await gQuery(${name}, { query: ${name}, variables }, options)
+	await ${name}.set({ ...data, error: data?.error, gQueryStatus: 'LOADED' })	
+	return data
 }
 
 `;
-          // If config is set to have subscription query, also write the
-          if (config.subscriptionQuery) {
-            operations += `
-export const ${name}Subscribe = ({ variables }: SubscribeWrapperArgs<${opv}>):
-Readable<GFetchReturnWithErrors<${op}>> =>
-		g.oFetch<${op}>({
-			queries: [{ query: ${pascalName}Doc, variables }]
-		})
-	`;
-          }
         } else if (o.operation === "mutation") {
           operations += `
 export const ${name} = ({ variables }: SubscribeWrapperArgs<${opv}>):
@@ -124,16 +117,14 @@ Promise<GFetchReturnWithErrors<${op}>> =>
     .join("\n");
 
   const imports = [
-    `import type { Readable } from "svelte/store"`,
     `import { writable } from "svelte/store"`,
+    `import type { Writable } from "svelte/store"`,
     `import { g } from '${config.gPath}'`,
     `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
-    `import { gQuery } from '@leveluptuts/g-query'`,
-    `import gql from "graphql-tag"`,
   ];
 
   return {
-    prepend: imports,
+    prepend: [...imports, ...visitor.getImports()],
     content: [
       defaultTypes,
       visitor.fragments,
@@ -142,3 +133,6 @@ Promise<GFetchReturnWithErrors<${op}>> =>
     ].join("\n"),
   };
 };
+// TODO
+// - add option to force update of cache. ie getUserTutorials({update: true})
+// if update.true is not set, then it will only update if the cache is empty

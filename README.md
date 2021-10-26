@@ -75,7 +75,7 @@ This also gives us a `get` function for queries based on the query name. ie `get
 	// Cache becomes populated with data available for SSR
 	import { user } from './UserQueries.gGenerated.graphql'
 
-	// $: console.log($user) //data available for ssr
+	// $: console.log($user.user) //data available for ssr
 </script>
 
 ```
@@ -89,9 +89,9 @@ It's a Svelte Writable Store. So after a mutation you can quickly and easily man
 ```javascript
 import { user, someMutation } from "./UserQueries.gGenerated.graphql";
 
-$user = null; // clears the cache
+$user.user = null; // clears the cache
 
-$user = await someMutation({ variables }); // if this returns the correct data
+$user.user = await someMutation({ variables }); // if this returns the correct data
 ```
 
 ### Q? Can't you update the cache magically for me after a mutation?

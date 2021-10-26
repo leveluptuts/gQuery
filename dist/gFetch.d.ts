@@ -1,5 +1,4 @@
 import { DefinitionNode, DocumentNode } from "graphql";
-import type { Readable } from "svelte/store";
 export declare type GFetchQueryDefault = {
     errors?: string[];
 };
@@ -51,13 +50,6 @@ export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
     constructor(options: ApolloClientOptions);
-    fetch<T>({ queries, fetch, }: gFetchProperties): Promise<GFetchReturnWithErrors<T>>;
-    oFetch<F>({ queries, }: {
-        queries: GFetchQueries[];
-    }): Readable<GFetchReturnWithErrors<F>>;
-    private unsubscribe;
-    private makeSubscribe;
-    private fetchDataForSubscription;
+    fetch<T>({ queries, fetch, }?: gFetchProperties | {}): Promise<GFetchReturnWithErrors<T>>;
 }
-export declare const data: import("svelte/store").Writable<unknown>;
 export {};

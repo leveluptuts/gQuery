@@ -1,6 +1,5 @@
 import { generate } from "@graphql-codegen/cli";
-const outputFile = "gquery.generated.ts";
-const fileRegex = /\.(graphql)$/;
+const fileRegex = /\.(graphql)$/; // not used, will be for the vite rerun
 export default function levelupViteCodegen(options) {
     if (!options.schema) {
         throw new Error("No schema provided");
@@ -12,30 +11,39 @@ export default function levelupViteCodegen(options) {
         throw new Error("No gPath directory specified. gPath is where you've initialized the 'g' client");
     }
     const { schema, output, gPath } = options;
+    console.log("running plugin");
     return {
-        name: "levelup-vite-codegen",
+        name: "g-query-codegen",
         async buildStart() {
             try {
-                const generatedFiles = await generate({
+                //   *1. Remove all .gGenerated files
+                // TODO: Find and remove all .gGenerated files
+                //   *2. Generate
+                await generate({
                     schema,
                     documents: "./src/**/*.graphql",
                     generates: {
-                        [`${process.cwd()}/${output}/gquery-types.generated.ts`]: {
+                        // * Generates the types for your schema
+                        [`${process.cwd()}/${output}/types.gGenerated.ts`]: {
                             plugins: ["typescript"],
                         },
+                        // * Generates near file .ts files for your fetch functions
                         [`${process.cwd()}/${output}`]: {
                             config: {
+                                useTypeImports: true,
                                 gPath,
+                                importDocumentNodeExternallyFrom: "near-operation-file",
+                                inlineFragmentTypes: "combine",
                             },
                             preset: "near-operation-file",
                             presetConfig: {
-                                extension: ".generated.ts",
+                                extension: ".gGenerated.ts",
                                 folder: "./",
-                                baseTypesPath: `gquery-types.generated.ts`,
+                                baseTypesPath: `types.gGenerated.ts`,
                             },
                             plugins: [
                                 "typescript-operations",
-                                "@leveluptuts/g-query/codegen-plugin",
+                                "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin.
                             ],
                         },
                     },
