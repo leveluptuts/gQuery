@@ -1,5 +1,4 @@
-import { Kind, print, } from "graphql";
-import "svelte/store";
+import { Kind, print } from "graphql";
 import { formatDocument as addTypenameToDocument } from "./utils/format";
 // This function accepts a graphql document and returns a string to be used
 // in fetch calls
@@ -52,59 +51,11 @@ export class GFetch extends Object {
         const data = await res.json();
         return {
             ...data.data,
+            errors: data.errors,
         };
+        // } as GFetchReturnWithErrors<T>;
     }
 }
-// * ogFetch
-// This function is a fetcher that returns a svelte readable subscription
-// This is to be used for client side fetching of data
-//   public oFetch<F>({
-//     queries,
-//   }: {
-//     queries: GFetchQueries[];
-//   }): Readable<GFetchReturnWithErrors<F>> {
-//     // 1. Build the store and initialize it as empty and error free
-//     const initial = new Map();
-//     // Creates a store that will be used to subscribe to the data
-//     const store = readable(initial, this.makeSubscribe(initial, queries));
-//     return store as unknown as Readable<GFetchReturnWithErrors<F>>;
-//   }
-//   // A dummy function that is used to make subscribe happy.
-//   private unsubscribe() {
-//     // Nothing to do in this case
-//   }
-//   // Part of ogFetch
-//   // Designed this way to work will with Svelte's readable store
-//   private makeSubscribe(data, queries) {
-//     // Create a closure with access to the
-//     // initial data and initialization arguments
-//     return (set) => {
-//       // 3. This won't get executed until the store has
-//       // its first subscriber. Kick off retrieval.
-//       this.fetchDataForSubscription(data, set, queries);
-//       // We're not waiting for the response.
-//       // Return the unsubscribe function which doesn't do
-//       // do anything here (but is part of the stores protocol).
-//       return this.unsubscribe;
-//     };
-//   }
-//   // Part of ogFetch
-//   // Runs gFetch and updates subscription
-//   private async fetchDataForSubscription(data, set, queries: GFetchQueries[]) {
-//     try {
-//       // Dispatch the request for the users
-//       // This code is ONLY run client side, so fetch comes globally from the browser
-//       const response = await this.fetch({ queries, fetch });
-//       set(response);
-//     } catch (error) {
-//       // 6b. if there is a fetch error - deal with it
-//       // and let observers know
-//       data.error = error;
-//       set(data);
-//     }
-//   }
-// }
-// export const data = writable();
 // ! IDEAS
 // Mutations should take care of updating a generated writeable.
 // $tutorial is auto updated site wide

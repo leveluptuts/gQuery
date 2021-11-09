@@ -32,13 +32,10 @@ declare type gFetchProperties = {
     queries: GFetchQueries[];
     fetch: typeof fetch;
 };
-export declare type ApolloClientOptions = {
+export declare type GClientOptions = {
     path?: string;
 };
-export declare type ApolloClient = {
-    path?: string;
-};
-export declare type GFetchReturn<T> = {
+export declare type GReturn<T> = {
     data: T;
     errors?: Error;
 };
@@ -49,7 +46,7 @@ export declare type GGetParameters<Variables> = {
 export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
-    constructor(options: ApolloClientOptions);
+    constructor(options: GClientOptions);
     fetch<T>({ queries, fetch, }?: gFetchProperties | {}): Promise<GFetchReturnWithErrors<T>>;
 }
 export {};
