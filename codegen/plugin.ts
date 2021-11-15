@@ -21,8 +21,8 @@ export default function levelupViteCodegen(options) {
     name: "g-query-codegen",
     async buildStart() {
       try {
-        //   *1. Remove all .gGenerated files
-        // TODO: Find and remove all .gGenerated files
+        //   *1. Remove all .gq files
+        // TODO: Find and remove all .gq files
         //   *2. Generate
 
         await generate(
@@ -31,7 +31,7 @@ export default function levelupViteCodegen(options) {
             documents: "./src/**/*.graphql",
             generates: {
               // * Generates the types for your schema
-              [`${process.cwd()}/${output}/types.gGenerated.ts`]: {
+              [`${process.cwd()}/${output}/types.gq.ts`]: {
                 plugins: ["typescript"],
               },
               // * Generates near file .ts files for your fetch functions
@@ -44,9 +44,9 @@ export default function levelupViteCodegen(options) {
                 },
                 preset: "near-operation-file",
                 presetConfig: {
-                  extension: ".gGenerated.ts",
+                  extension: ".gq.ts",
                   folder: "./",
-                  baseTypesPath: `types.gGenerated.ts`,
+                  baseTypesPath: `types.gq.ts`,
                 },
                 plugins: [
                   "typescript-operations", // operations, gets you types for operations (queries and mutations)

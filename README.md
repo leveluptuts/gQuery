@@ -52,14 +52,14 @@ query user {
 
 ### 4. Use that thang
 
-The code gen will find the file and spit out a file next to it. Named `FileName.gGenerated.ts`
-Using the above code, it would output `UserQueries.gGenerated.ts`
+The code gen will find the file and spit out a file next to it. Named `FileName.gq.ts`
+Using the above code, it would output `UserQueries.gq.ts`
 This also gives us a `get` function for queries based on the query name. ie `getUser` for the above.
 
 ```svelte
 <script context="module" lang="ts">
 	// The generated function that fetches and caches
-	import { getUser } from './UserQueries.gGenerated.graphql'
+	import { getUser } from './UserQueries.gq.graphql'
 
 	export async function load({fetch}) {
 		// Runs the cache/fetch function populating $gCache before use.
@@ -73,7 +73,7 @@ This also gives us a `get` function for queries based on the query name. ie `get
 
 <script lang="ts">
 	// Cache becomes populated with data available for SSR
-	import { user } from './UserQueries.gGenerated.graphql'
+	import { user } from './UserQueries.gq.graphql'
 
 	// $: console.log($user.user) //data available for ssr
 </script>
@@ -87,7 +87,7 @@ This also gives us a `get` function for queries based on the query name. ie `get
 It's a Svelte Writable Store. So after a mutation you can quickly and easily manually update the cache.
 
 ```javascript
-import { user, someMutation } from "./UserQueries.gGenerated.graphql";
+import { user, someMutation } from "./UserQueries.gq.graphql";
 
 $user.user = null; // clears the cache
 
@@ -99,7 +99,7 @@ $user.user = await someMutation({ variables }); // if this returns the correct d
 Maybe? If you want to be in charge of writing that bit, the door is open 😼. My idea for the api would look something like this.
 
 ```javascript
-import { user, someMutation } from "./UserQueries.gGenerated.graphql";
+import { user, someMutation } from "./UserQueries.gq.graphql";
 
 await someMutation({ variables, store: user });
 ```
