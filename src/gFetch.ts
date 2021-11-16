@@ -100,6 +100,7 @@ export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
   public path: string;
+  public headers?: { [key: string]: string }
 
   constructor(options: GClientOptions) {
     super();
@@ -127,7 +128,7 @@ export class GFetch extends Object {
     const res = await fetch(this.path, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...headers },
       body: JSON.stringify(newQueries),
     });
 
