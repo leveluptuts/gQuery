@@ -104,7 +104,8 @@ export class GFetch extends Object {
 
   constructor(options: GClientOptions) {
     super();
-    const { path } = options;
+    const { path, headers } = options;
+    this.headers = headers;
     this.path = path;
     this.fetch = this.fetch.bind(this);
   }
@@ -128,7 +129,7 @@ export class GFetch extends Object {
     const res = await fetch(this.path, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json", ...headers },
+      headers: { "Content-Type": "application/json", ...this.headers },
       body: JSON.stringify(newQueries),
     });
 
