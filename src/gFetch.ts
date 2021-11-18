@@ -84,7 +84,7 @@ type gFetchProperties = {
 
 export type GClientOptions = {
   path?: string;
-  headers?: string;
+  headers?: { [key: string]?: string };
 };
 
 export type GReturn<T> = {
