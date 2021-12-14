@@ -1,6 +1,4 @@
-import { DefinitionNode, DocumentNode, Kind, print } from "graphql";
-
-import { formatDocument as addTypenameToDocument } from "./utils/format";
+import { DefinitionNode, DocumentNode, print } from "graphql";
 
 // What's the deal with *gFetch*?
 // gFetch is a 0 dependency fetcher for graphql that accepts a custom fetch function
@@ -17,7 +15,8 @@ import { formatDocument as addTypenameToDocument } from "./utils/format";
 //  3. Plays nice with custom fetch functions
 //  4. Doesn't use it's own cache, ie, would rely on Svelte's stores
 export declare type GFetchQueryDefault = {
-  errors?: string[];
+  errors?: Error[];
+  gQueryStatus: "LOADED";
 };
 
 type OptionalPropertyNames<T> = {
@@ -41,31 +40,9 @@ type Spread<A extends readonly [...any]> = A extends [infer L, ...infer R]
   ? SpreadTwo<L, Spread<R>>
   : unknown;
 
-export declare type GFetchQueryResult<F> = {
-  [k: string]: F;
-};
-
 export declare type GFetchQueries = {
   query: DocumentNode;
   variables?: Record<string, unknown>;
-};
-
-// This function accepts a graphql document and returns a string to be used
-// in fetch calls
-export function gqlToString(tag: DocumentNode): string {
-  return tag.loc.source.body;
-}
-
-/**
- * Finds the Name value from the OperationDefinition of a Document
- */
-export const getOperationName = (query: DocumentNode): string | undefined => {
-  for (let i = 0, l = query.definitions.length; i < l; i++) {
-    const node = query.definitions[i];
-    if (node.kind === Kind.OPERATION_DEFINITION && node.name) {
-      return node.name.value;
-    }
-  }
 };
 
 export const stringifyDocument = (
@@ -84,11 +61,6 @@ type gFetchProperties = {
 
 export type GClientOptions = {
   path?: string;
-};
-
-export type GReturn<T> = {
-  data: T;
-  errors?: Error;
 };
 
 export type GGetParameters<Variables> = {
@@ -113,9 +85,9 @@ export class GFetch extends Object {
   public async fetch<T>({
     queries,
     fetch,
-  }: gFetchProperties | {} = {}): Promise<GFetchReturnWithErrors<T>> {
-    let document: DocumentNode = addTypenameToDocument(queries[0].query);
-    let documentString: string = stringifyDocument(document);
+  }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>> {
+    // let document: DocumentNode = addTypenameToDocument(queries[0].query);
+    let documentString: string = stringifyDocument(queries[0].query);
     const newQueries = {
       ...queries[0],
       query: documentString,
@@ -138,10 +110,5 @@ export class GFetch extends Object {
       ...data.data,
       errors: data.errors,
     };
-    // } as GFetchReturnWithErrors<T>;
   }
 }
-
-// ! IDEAS
-// Mutations should take care of updating a generated writeable.
-// $tutorial is auto updated site wide

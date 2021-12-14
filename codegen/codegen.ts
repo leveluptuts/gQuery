@@ -18,8 +18,6 @@ export const plugin: PluginFunction<any> = (
   documents: Types.DocumentFile[],
   config
 ) => {
-  console.log("🛠️ Codegen Starting");
-
   const allAst = concatAST(documents.map((d) => d.document));
 
   const allFragments: LoadedFragment[] = [
@@ -60,17 +58,14 @@ type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
 
-
 interface CacheFunctionOptions {
 	update?: boolean
 }
-
 `;
 
   const ops = operations
     .map((o) => {
       if (o) {
-        console.log("o", o);
         const name = o?.name?.value || "";
         const op = `${pascalCase(name)}${pascalCase(o.operation)}`;
         const pascalName = pascalCase(name);
@@ -79,15 +74,7 @@ interface CacheFunctionOptions {
 
         if (o.operation === "query") {
           operations += `
-export const ${name} = writable<${op}>()
-
-export const fetch${pascalName} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
-	Promise<GFetchReturnWithErrors<${op}>> =>
-		g.fetch<${op}>({
-			queries: [{ query: ${pascalName}Doc, variables }],
-			fetch
-		})
-
+export const ${name} = writable<GFetchReturnWithErrors<${op}>>()
 
 // Cached
 export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
@@ -95,7 +82,7 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
 		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch
 	})
-	await ${name}.set({ ...data, error: data?.error, gQueryStatus: 'LOADED' })	
+	await ${name}.set({ ...data, errors: data?.errors, gQueryStatus: 'LOADED' })	
 	return data
 }
 
@@ -118,7 +105,6 @@ Promise<GFetchReturnWithErrors<${op}>> =>
 
   const imports = [
     `import { writable } from "svelte/store"`,
-    `import type { Writable } from "svelte/store"`,
     `import { g } from '${config.gPath}'`,
     `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
   ];

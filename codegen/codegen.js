@@ -3,7 +3,6 @@ import "@graphql-codegen/plugin-helpers";
 import { ClientSideBaseVisitor, } from "@graphql-codegen/visitor-plugin-common";
 import pascalCase from "just-pascal-case";
 export const plugin = (schema, documents, config) => {
-    console.log("🛠️ Codegen Starting");
     const allAst = concatAST(documents.map((d) => d.document));
     const allFragments = [
         ...allAst.definitions.filter((d) => d.kind === Kind.FRAGMENT_DEFINITION).map((fragmentDef) => ({
@@ -28,17 +27,14 @@ type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
 
-
 interface CacheFunctionOptions {
 	update?: boolean
 }
-
 `;
     const ops = operations
         .map((o) => {
         var _a;
         if (o) {
-            console.log("o", o);
             const name = ((_a = o === null || o === void 0 ? void 0 : o.name) === null || _a === void 0 ? void 0 : _a.value) || "";
             const op = `${pascalCase(name)}${pascalCase(o.operation)}`;
             const pascalName = pascalCase(name);
@@ -46,15 +42,7 @@ interface CacheFunctionOptions {
             let operations = "";
             if (o.operation === "query") {
                 operations += `
-export const ${name} = writable<${op}>()
-
-export const fetch${pascalName} = ({ variables, fetch}: FetchWrapperArgs<${opv}>):
-	Promise<GFetchReturnWithErrors<${op}>> =>
-		g.fetch<${op}>({
-			queries: [{ query: ${pascalName}Doc, variables }],
-			fetch
-		})
-
+export const ${name} = writable<GFetchReturnWithErrors<${op}>>()
 
 // Cached
 export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
@@ -62,7 +50,7 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
 		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch
 	})
-	await ${name}.set({ ...data, error: data?.error, gQueryStatus: 'LOADED' })	
+	await ${name}.set({ ...data, errors: data?.errors, gQueryStatus: 'LOADED' })	
 	return data
 }
 
@@ -84,7 +72,6 @@ Promise<GFetchReturnWithErrors<${op}>> =>
         .join("\n");
     const imports = [
         `import { writable } from "svelte/store"`,
-        `import type { Writable } from "svelte/store"`,
         `import { g } from '${config.gPath}'`,
         `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
     ];

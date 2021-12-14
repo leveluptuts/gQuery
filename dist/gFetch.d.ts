@@ -1,6 +1,7 @@
 import { DefinitionNode, DocumentNode } from "graphql";
 export declare type GFetchQueryDefault = {
-    errors?: string[];
+    errors?: Error[];
+    gQueryStatus: "LOADED";
 };
 declare type OptionalPropertyNames<T> = {
     [K in keyof T]-?: {} extends {
@@ -15,18 +16,10 @@ declare type Id<T> = T extends infer U ? {
 } : never;
 declare type SpreadTwo<L, R> = Id<Pick<L, Exclude<keyof L, keyof R>> & Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> & Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>> & SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>>;
 declare type Spread<A extends readonly [...any]> = A extends [infer L, ...infer R] ? SpreadTwo<L, Spread<R>> : unknown;
-export declare type GFetchQueryResult<F> = {
-    [k: string]: F;
-};
 export declare type GFetchQueries = {
     query: DocumentNode;
     variables?: Record<string, unknown>;
 };
-export declare function gqlToString(tag: DocumentNode): string;
-/**
- * Finds the Name value from the OperationDefinition of a Document
- */
-export declare const getOperationName: (query: DocumentNode) => string | undefined;
 export declare const stringifyDocument: (node: string | DefinitionNode | DocumentNode) => string;
 declare type gFetchProperties = {
     queries: GFetchQueries[];
@@ -34,10 +27,6 @@ declare type gFetchProperties = {
 };
 export declare type GClientOptions = {
     path?: string;
-};
-export declare type GReturn<T> = {
-    data: T;
-    errors?: Error;
 };
 export declare type GGetParameters<Variables> = {
     variables?: Variables;
@@ -47,6 +36,6 @@ export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
     constructor(options: GClientOptions);
-    fetch<T>({ queries, fetch, }?: gFetchProperties | {}): Promise<GFetchReturnWithErrors<T>>;
+    fetch<T>({ queries, fetch, }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>>;
 }
 export {};

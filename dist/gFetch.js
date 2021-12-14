@@ -1,21 +1,4 @@
-import { Kind, print } from "graphql";
-import { formatDocument as addTypenameToDocument } from "./utils/format";
-// This function accepts a graphql document and returns a string to be used
-// in fetch calls
-export function gqlToString(tag) {
-    return tag.loc.source.body;
-}
-/**
- * Finds the Name value from the OperationDefinition of a Document
- */
-export const getOperationName = (query) => {
-    for (let i = 0, l = query.definitions.length; i < l; i++) {
-        const node = query.definitions[i];
-        if (node.kind === Kind.OPERATION_DEFINITION && node.name) {
-            return node.name.value;
-        }
-    }
-};
+import { print } from "graphql";
 export const stringifyDocument = (node) => {
     let str = (typeof node !== "string" ? print(node) : node)
         .replace(/([\s,]|#[^\n\r]+)+/g, " ")
@@ -31,9 +14,9 @@ export class GFetch extends Object {
     }
     // * gFetch
     // This is a fetcher that returns a promise that resolves to a graphql response
-    async fetch({ queries, fetch, } = {}) {
-        let document = addTypenameToDocument(queries[0].query);
-        let documentString = stringifyDocument(document);
+    async fetch({ queries, fetch, }) {
+        // let document: DocumentNode = addTypenameToDocument(queries[0].query);
+        let documentString = stringifyDocument(queries[0].query);
         const newQueries = {
             ...queries[0],
             query: documentString,
@@ -53,10 +36,6 @@ export class GFetch extends Object {
             ...data.data,
             errors: data.errors,
         };
-        // } as GFetchReturnWithErrors<T>;
     }
 }
-// ! IDEAS
-// Mutations should take care of updating a generated writeable.
-// $tutorial is auto updated site wide
 //# sourceMappingURL=gFetch.js.map

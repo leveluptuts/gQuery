@@ -1,4 +1,5 @@
 import { generate } from "@graphql-codegen/cli";
+import { execaCommand } from "execa";
 const fileRegex = /\.(graphql)$/; // not used, will be for the vite rerun
 
 export default function levelupViteCodegen(options) {
@@ -6,7 +7,7 @@ export default function levelupViteCodegen(options) {
     throw new Error("No schema provided");
   }
   if (!options.output) {
-    throw new Error("No output directory specified");
+    throw new Error("No output directory specified for types.");
   }
   if (!options.gPath) {
     throw new Error(
@@ -22,9 +23,18 @@ export default function levelupViteCodegen(options) {
     async buildStart() {
       try {
         //   *1. Remove all .gq files
-        // TODO: Find and remove all .gq files
-        //   *2. Generate
+        console.log("🧹 removing all .gq files");
+        // Find and remove all .gq files
+        await execaCommand(
+          "find ./ -path '*.gq.ts' -type f -prune -print -exec rm -f '{}' +; ",
+          {
+            stdio: "inherit",
+            shell: true,
+          }
+        );
 
+        //   *2. Generate
+        console.log("🤖 starting codegen");
         await generate(
           {
             schema,
@@ -58,7 +68,11 @@ export default function levelupViteCodegen(options) {
           true
         );
       } catch (e) {
-        console.log("❓ gFetch Warning - No `.graphql` files found.");
+        console.log(
+          "❓ gFetch Error - Something Happened - Here is the error and some things to consider.",
+          e
+        );
+        console.log("❓ gFetch Error - Make sure `.graphql` are files found.");
         console.log(
           "❓ gFetch Warning - If you would like the gQuery generator to work (we reccomend you do)."
         );
