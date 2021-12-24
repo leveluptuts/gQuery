@@ -1,5 +1,5 @@
-import { visit, concatAST, Kind, } from "graphql";
-import "@graphql-codegen/plugin-helpers";
+import { concatAST, Kind, } from "graphql";
+import { oldVisit, } from "@graphql-codegen/plugin-helpers";
 import { ClientSideBaseVisitor, } from "@graphql-codegen/visitor-plugin-common";
 import pascalCase from "just-pascal-case";
 export const plugin = (schema, documents, config) => {
@@ -14,7 +14,7 @@ export const plugin = (schema, documents, config) => {
         ...(config.externalFragments || []),
     ];
     const visitor = new ClientSideBaseVisitor(schema, allFragments, config, { documentVariableSuffix: "Doc" }, documents);
-    const visitorResult = visit(allAst, { leave: visitor });
+    const visitorResult = oldVisit(allAst, { leave: visitor });
     const operations = allAst.definitions.filter((d) => d.kind === Kind.OPERATION_DEFINITION);
     const defaultTypes = `
 

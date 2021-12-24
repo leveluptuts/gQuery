@@ -1,12 +1,16 @@
 import {
-  visit,
   GraphQLSchema,
   concatAST,
   Kind,
   FragmentDefinitionNode,
   OperationDefinitionNode,
 } from "graphql";
-import { Types, PluginFunction } from "@graphql-codegen/plugin-helpers";
+
+import {
+  Types,
+  PluginFunction,
+  oldVisit,
+} from "@graphql-codegen/plugin-helpers";
 import {
   ClientSideBaseVisitor,
   LoadedFragment,
@@ -41,7 +45,7 @@ export const plugin: PluginFunction<any> = (
     { documentVariableSuffix: "Doc" },
     documents
   );
-  const visitorResult = visit(allAst, { leave: visitor });
+  const visitorResult = oldVisit(allAst, { leave: visitor });
 
   const operations = allAst.definitions.filter(
     (d) => d.kind === Kind.OPERATION_DEFINITION
