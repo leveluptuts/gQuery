@@ -1,62 +1,64 @@
+import "vite";
 import { generate } from "@graphql-codegen/cli";
 import { execaCommand } from "execa";
-import "@rollup/pluginutils";
-const fileRegex = /\.(graphql)$/; // not used, will be for the vite rerun
-export default function levelupViteCodegen({ schema, output, gPath }) {
+const filterExt = /\.(graphqls?|gql)$/i;
+async function cleanGQ() {
+    console.log("🧹 removing all .gq files");
+    // Find and remove all .gq files
+    await execaCommand("find ./ -path '*.gq.ts' -type f -prune -print -exec rm -f '{}' +; ", {
+        stdio: "inherit",
+        shell: true,
+    });
+}
+async function gQueryGenerate({ schema, out, gPath }) {
+    //   *2. Generate
+    console.log("🤖 starting codegen");
+    await generate({
+        schema,
+        documents: "./src/**/*.graphql",
+        generates: {
+            // * Generates the types for your schema
+            [`${process.cwd()}/${out}/types.gq.ts`]: {
+                plugins: ["typescript"],
+            },
+            // * Generates near file .ts files for your fetch functions
+            [`${process.cwd()}/${out}`]: {
+                config: {
+                    useTypeImports: true,
+                    gPath,
+                    importDocumentNodeExternallyFrom: "near-operation-file",
+                    inlineFragmentTypes: "combine",
+                },
+                preset: "near-operation-file",
+                presetConfig: {
+                    extension: ".gq.ts",
+                    folder: "./",
+                    baseTypesPath: `types.gq.ts`,
+                },
+                plugins: [
+                    "typescript-operations",
+                    "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin.
+                ],
+            },
+        },
+    }, true);
+}
+export default function levelupViteCodegen({ schema, out, gPath }) {
     if (!schema) {
         throw new Error("No schema provided");
     }
-    if (!output) {
+    if (!out) {
         throw new Error("No output directory specified for types.");
     }
     if (!gPath) {
         throw new Error("No gPath directory specified. gPath is where you've initialized the 'g' client");
     }
-    const filterExt = /\.(graphqls?|gql)$/i;
-    console.log("running plugin");
-    console.log(":teesttingngng");
     return {
         name: "g-query-codegen",
         async buildStart() {
             try {
-                //   *1. Remove all .gq files
-                console.log("🧹 removing all .gq files");
-                // Find and remove all .gq files
-                await execaCommand("find ./ -path '*.gq.ts' -type f -prune -print -exec rm -f '{}' +; ", {
-                    stdio: "inherit",
-                    shell: true,
-                });
-                //   *2. Generate
-                console.log("🤖 starting codegen");
-                await generate({
-                    schema,
-                    documents: "./src/**/*.graphql",
-                    generates: {
-                        // * Generates the types for your schema
-                        [`${process.cwd()}/${output}/types.gq.ts`]: {
-                            plugins: ["typescript"],
-                        },
-                        // * Generates near file .ts files for your fetch functions
-                        [`${process.cwd()}/${output}`]: {
-                            config: {
-                                useTypeImports: true,
-                                gPath,
-                                importDocumentNodeExternallyFrom: "near-operation-file",
-                                inlineFragmentTypes: "combine",
-                            },
-                            preset: "near-operation-file",
-                            presetConfig: {
-                                extension: ".gq.ts",
-                                folder: "./",
-                                baseTypesPath: `types.gq.ts`,
-                            },
-                            plugins: [
-                                "typescript-operations",
-                                "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin.
-                            ],
-                        },
-                    },
-                }, true);
+                await cleanGQ();
+                await gQueryGenerate({ schema, out, gPath });
                 return;
             }
             catch (e) {
@@ -67,22 +69,20 @@ export default function levelupViteCodegen({ schema, output, gPath }) {
             }
             return;
         },
-        transform(src, id) {
-            console.log("src", src, id);
-            if (!filterExt.test(id))
-                return null;
-        },
-        resolveId(source) {
-            console.log("source", source);
-            return;
-        },
-        watchChange(id) {
-            console.log("watch change", id);
-            return;
-        },
-        async generateBundle(opts) {
-            console.log("opts", opts);
-            return;
+        configureServer(server) {
+            const listener = async (absolutePath = "") => {
+                if (!filterExt.test(absolutePath))
+                    return null;
+                try {
+                    await cleanGQ();
+                    await gQueryGenerate({ schema, out, gPath });
+                }
+                catch (error) {
+                    console.log("Something went wrong. Please save the file again.");
+                }
+            };
+            server.watcher.on("add", listener);
+            server.watcher.on("change", listener);
         },
     };
 }

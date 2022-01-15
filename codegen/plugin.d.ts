@@ -1,12 +1,6 @@
-export default function levelupViteCodegen({ schema, output, gPath }: {
+import { Plugin } from "vite";
+export default function levelupViteCodegen({ schema, out, gPath }: {
     schema: any;
-    output: any;
+    out: any;
     gPath: any;
-}): {
-    name: string;
-    buildStart(): Promise<void>;
-    transform(src: any, id: any): any;
-    resolveId(source: any): void;
-    watchChange(id: any): void;
-    generateBundle(opts: any): Promise<void>;
-};
+}): Plugin;
