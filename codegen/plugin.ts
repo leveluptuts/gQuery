@@ -1,23 +1,25 @@
 import { generate } from "@graphql-codegen/cli";
 import { execaCommand } from "execa";
+import { createFilter } from "@rollup/pluginutils";
 const fileRegex = /\.(graphql)$/; // not used, will be for the vite rerun
 
-export default function levelupViteCodegen(options) {
-  if (!options.schema) {
+export default function levelupViteCodegen({ schema, output, gPath }) {
+  if (!schema) {
     throw new Error("No schema provided");
   }
-  if (!options.output) {
+  if (!output) {
     throw new Error("No output directory specified for types.");
   }
-  if (!options.gPath) {
+  if (!gPath) {
     throw new Error(
       "No gPath directory specified. gPath is where you've initialized the 'g' client"
     );
   }
 
-  const { schema, output, gPath } = options;
+  const filterExt = /\.(graphqls?|gql)$/i;
 
   console.log("running plugin");
+  console.log(":teesttingngng");
   return {
     name: "g-query-codegen",
     async buildStart() {
@@ -67,6 +69,7 @@ export default function levelupViteCodegen(options) {
           },
           true
         );
+        return;
       } catch (e) {
         console.log(
           "❓ gFetch Error - Something Happened - Here is the error and some things to consider.",
@@ -83,6 +86,21 @@ export default function levelupViteCodegen(options) {
       return;
     },
 
-    transform(src, id) {},
+    transform(src, id) {
+      console.log("src", src, id);
+      if (!filterExt.test(id)) return null;
+    },
+    resolveId(source) {
+      console.log("source", source);
+      return;
+    },
+    watchChange(id) {
+      console.log("watch change", id);
+      return;
+    },
+    async generateBundle(opts) {
+      console.log("opts", opts);
+      return;
+    },
   };
 }
