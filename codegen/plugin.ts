@@ -1,23 +1,23 @@
-import { Plugin, ResolvedConfig } from "vite";
+import type { Plugin } from "vite";
 import { generate } from "@graphql-codegen/cli";
 import { execaCommand } from "execa";
 const filterExt = /\.(graphqls?|gql)$/i;
 
-async function cleanGQ() {
-  console.log("🧹 removing all .gq files");
+async function cleanGQ({ debug = false }) {
+  debug && console.log("🧹 removing all .gq files");
   // Find and remove all .gq files
   await execaCommand(
     "find ./ -path '*.gq.ts' -type f -prune -print -exec rm -f '{}' +; ",
     {
-      stdio: "inherit",
+      stdio: debug ? "inherit" : "ignore",
       shell: true,
     }
   );
 }
 
-async function gQueryGenerate({ schema, out, gPath }) {
+async function gQueryGenerate({ schema, out, gPath, debug = false }) {
   //   *2. Generate
-  console.log("🤖 starting codegen");
+  debug && console.log("🤖 starting codegen");
   await generate(
     {
       schema,
@@ -52,7 +52,12 @@ async function gQueryGenerate({ schema, out, gPath }) {
   );
 }
 
-export default function levelupViteCodegen({ schema, out, gPath }): Plugin {
+export default function levelupViteCodegen({
+  schema,
+  out,
+  gPath,
+  debug = false,
+}): Plugin {
   if (!schema) {
     throw new Error("No schema provided");
   }
@@ -69,11 +74,12 @@ export default function levelupViteCodegen({ schema, out, gPath }): Plugin {
     name: "g-query-codegen",
     async buildStart() {
       try {
-        await cleanGQ();
-        await gQueryGenerate({ schema, out, gPath });
+        await cleanGQ({ debug });
+        await gQueryGenerate({ schema, out, gPath, debug });
 
         return;
       } catch (e) {
+        //   TODO - These errors aren't good enough
         console.log(
           "❓ gFetch Error - Something Happened - Here is the error and some things to consider.",
           e
@@ -93,7 +99,7 @@ export default function levelupViteCodegen({ schema, out, gPath }): Plugin {
       const listener = async (absolutePath = "") => {
         if (!filterExt.test(absolutePath)) return null;
         try {
-          await cleanGQ();
+          await cleanGQ({ debug });
           await gQueryGenerate({ schema, out, gPath });
         } catch (error) {
           console.log("Something went wrong. Please save the file again.");
