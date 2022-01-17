@@ -7,12 +7,21 @@
     "declaration": true,
     "target": "es2020",
     "importsNotUsedAsValues": "error",
+    "importHelpers": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    /**
-			To have warnings/errors of the Svelte compiler at the correct position,
-			enable source maps by default.
-			*/
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "noEmitOnError": false,
+
+    /* Additional Checks */ "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+
     "sourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

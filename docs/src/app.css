@@ -1,0 +1,316 @@
+@import 'https://unpkg.com/open-props';
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,500;0,800;1,200&display=swap');
+
+body {
+	min-height: 100vh;
+	margin: 0;
+	background-color: var(--primary-color);
+	background: linear-gradient(
+		180deg,
+		var(--primary-color) 0%,
+		var(--secondary-color) 10.45%,
+		var(--tertiary-color) 41.35%
+	);
+	font-family: var(--font-mono);
+	background-image: var(--gradient-2);
+}
+
+body::before {
+	content: '';
+	width: 80vw;
+	height: 100vh;
+	position: absolute;
+	top: 0;
+	left: 10vw;
+	z-index: -1;
+	opacity: 0.05;
+}
+
+#svelte {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+p {
+	line-height: 1.5;
+}
+
+a {
+	color: var(--accent-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	font-family: 'Kanit', sans-serif;
+	line-height: var(--font-lineheight-1);
+	font-size: var(--font-size-8);
+	margin-bottom: 4rem;
+	margin-top: 0;
+}
+
+h2 {
+	font-family: 'Kanit', sans-serif;
+	font-weight: 500;
+	font-size: var(--font-size-5);
+	line-height: var(--font-lineheight-1);
+	margin-bottom: 3rem;
+	margin-top: 1rem;
+}
+h3 {
+	font-family: 'Kanit', sans-serif;
+	font-size: var(--font-size-4);
+	margin-bottom: 2rem;
+	font-weight: 500;
+	margin-top: 1rem;
+}
+
+h4 {
+	font-size: var(--font-size-3);
+	font-family: 'Kanit', sans-serif;
+	margin-bottom: 2rem;
+	font-weight: 500;
+	margin-top: 1rem;
+}
+
+pre {
+	font-size: 16px;
+	--padding: 10px;
+	font-family: var(--font-mono);
+	background-color: rgba(255, 255, 255, 0.1);
+	box-shadow: var(--shadow-5);
+	padding: var(--padding);
+	overflow-x: auto;
+	margin-bottom: 4rem;
+	color: var(--text-color);
+	border-radius: calc(5px + var(--padding));
+}
+
+input,
+button {
+	font-size: inherit;
+	font-family: inherit;
+}
+
+button:focus:not(:focus-visible) {
+	outline: none;
+}
+
+@media (min-width: 720px) {
+	h1 {
+		font-size: 2.4rem;
+	}
+}
+
+code,
+code[class*='language-'] {
+	background: #111111;
+	border-radius: 5px;
+	box-shadow: var(--level-2);
+	color: #eee;
+	display: block;
+	overflow-x: scroll;
+	padding: 15px;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	font-family: Roboto Mono, monospace;
+	font-size: 1em;
+	line-height: 1.5em;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+code[class*='language-']::-moz-selection,
+pre[class*='language-']::-moz-selection,
+code[class*='language-'] ::-moz-selection,
+pre[class*='language-'] ::-moz-selection {
+	background: #363636;
+}
+
+code[class*='language-']::selection,
+pre[class*='language-']::selection,
+code[class*='language-'] ::selection,
+pre[class*='language-'] ::selection {
+	background: #363636;
+}
+
+:not(pre) > code[class*='language-'] {
+	white-space: normal;
+	border-radius: 0.2em;
+	padding: 0.1em;
+}
+
+.language-css > code,
+.language-sass > code,
+.language-scss > code {
+	color: #fd9170;
+}
+
+.token.atrule {
+	color: #c792ea;
+}
+
+.token.attr-name {
+	color: #ffcb6b;
+}
+
+.token.attr-value {
+	color: #c3e88d;
+}
+
+.token.attribute {
+	color: #c3e88d;
+}
+
+.token.boolean {
+	color: #c792ea;
+}
+
+.token.builtin {
+	color: #ffcb6b;
+}
+
+.token.cdata {
+	color: #80cbc4;
+}
+
+.token.char {
+	color: #80cbc4;
+}
+
+.token.class {
+	color: #ffcb6b;
+}
+
+.token.class-name {
+	color: #e2006d;
+}
+
+.token.color {
+	color: #e2006d;
+}
+
+.token.comment {
+	color: #546e7a;
+}
+
+.token.constant {
+	color: #c792ea;
+}
+
+.token.deleted {
+	color: #f07178;
+}
+
+.token.doctype {
+	color: #546e7a;
+}
+
+.token.entity {
+	color: #f07178;
+}
+
+.token.function {
+	color: #61dbd9;
+}
+
+.token.hexcode {
+	color: #f2ff00;
+}
+
+.token.id {
+	color: #c792ea;
+	font-weight: bold;
+}
+
+.token.important {
+	color: #c792ea;
+	font-weight: bold;
+}
+
+.token.inserted {
+	color: #80cbc4;
+}
+
+.token.keyword {
+	color: #e2006d;
+	font-style: italic;
+}
+
+.token.number {
+	color: #fd9170;
+}
+
+.token.operator {
+	color: #89ddff;
+}
+
+.token.prolog {
+	color: #546e7a;
+}
+
+.token.property {
+	color: #80cbc4;
+}
+
+.token.pseudo-class {
+	color: #c3e88d;
+}
+
+.token.pseudo-element {
+	color: #c3e88d;
+}
+
+.token.punctuation {
+	color: #f9be48;
+}
+
+.token.regex {
+	color: #f9be48;
+}
+
+.token.selector {
+	color: #f07178;
+}
+
+.token.string {
+	color: #f9be48;
+}
+
+.token.symbol {
+	color: #c792ea;
+}
+
+.token.tag {
+	color: #f07178;
+}
+
+.token.unit {
+	color: #f07178;
+}
+
+.token.url {
+	color: #fd9170;
+}
+
+.token.variable {
+	color: #f07178;
+}
+
+.language-graphql {
+	color: #eee;
+}

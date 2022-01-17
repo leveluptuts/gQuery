@@ -1,0 +1,13 @@
+<script context="module" lang="ts">
+	export const prerender = true;
+	import { getLatestSeries, latestSeries } from '$lib/listing/Series.gq';
+
+	export async function load({ fetch }) {
+		await getLatestSeries({ fetch });
+		return {};
+	}
+</script>
+
+<h1>
+	{$latestSeries.latestPlaylist.title}
+</h1>

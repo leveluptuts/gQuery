@@ -15,8 +15,7 @@
     "graphql": "^16.2.0",
     "just-pascal-case": "^3.0.1",
     "pascal-case": "^3.1.2",
-    "svelte": "^3.44.3",
-    "vite": "^2.7.3"
+    "svelte": "^3.44.3"
   },
   "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
   "devDependencies": {
@@ -25,9 +24,9 @@
   },
   "exports": {
     ".": "./dist/index.js",
-    "./*": "./dist/index.js",
     "./codegen": "./codegen/plugin.js",
     "./codegen-plugin": "./codegen/codegen.js",
+    "./gFetch": "./dist/gFetch.js",
     "./package.json": "./package.json"
   },
   "homepage": "https://github.com/leveluptuts/gQuery#readme",
@@ -45,7 +44,8 @@
     "dev:codegen": "tsc -w --project codegen.tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "svelte": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "0.1.4"
+  "version": "0.1.9"
 }
