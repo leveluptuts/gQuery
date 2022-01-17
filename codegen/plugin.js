@@ -1,5 +1,7 @@
 import { generate } from "@graphql-codegen/cli";
+console.log("generate", generate);
 import { execaCommand } from "execa";
+console.log("execaCommand", execaCommand);
 const filterExt = /\.(graphqls?|gql)$/i;
 async function cleanGQ({ debug = false }) {
     debug && console.log("🧹 removing all .gq files");
@@ -55,6 +57,7 @@ export default function levelupViteCodegen({ schema, out, gPath, debug = false, 
     return {
         name: "g-query-codegen",
         async buildStart() {
+            console.log("build start");
             try {
                 await cleanGQ({ debug });
                 await gQueryGenerate({ schema, out, gPath, debug });

@@ -1,6 +1,8 @@
 import type { Plugin } from "vite";
 import { generate } from "@graphql-codegen/cli";
+console.log("generate", generate);
 import { execaCommand } from "execa";
+console.log("execaCommand", execaCommand);
 const filterExt = /\.(graphqls?|gql)$/i;
 
 async function cleanGQ({ debug = false }) {
@@ -73,6 +75,7 @@ export default function levelupViteCodegen({
   return {
     name: "g-query-codegen",
     async buildStart() {
+      console.log("build start");
       try {
         await cleanGQ({ debug });
         await gQueryGenerate({ schema, out, gPath, debug });
