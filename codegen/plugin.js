@@ -1,8 +1,8 @@
 import { generate } from "@graphql-codegen/cli";
-console.log("generate", generate);
 import { execaCommand } from "execa";
-console.log("execaCommand", execaCommand);
+// Only load up graphql, graphqls or gql files
 const filterExt = /\.(graphqls?|gql)$/i;
+// Delete all gq (generated) files
 async function cleanGQ({ debug = false }) {
     debug && console.log("🧹 removing all .gq files");
     // Find and remove all .gq files
@@ -11,9 +11,10 @@ async function cleanGQ({ debug = false }) {
         shell: true,
     });
 }
+// Runs graphql codegen
 async function gQueryGenerate({ schema, out, gPath, debug = false }) {
-    //   *2. Generate
     debug && console.log("🤖 starting codegen");
+    // the actual codegen process.
     await generate({
         schema,
         documents: "./src/**/*.graphql",
@@ -38,7 +39,7 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }) {
                 },
                 plugins: [
                     "typescript-operations",
-                    "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin.
+                    "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin. ./codegen.ts
                 ],
             },
         },

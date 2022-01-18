@@ -69,4 +69,20 @@
 	nav a {
 		margin-bottom: 1rem;
 	}
+
+	@media only screen and (max-width: 780px) {
+		h1 {
+			text-align: center;
+		}
+		svg {
+			margin: 0;
+		}
+		main {
+			display: block;
+		}
+		aside {
+			height: auto;
+			position: relative;
+		}
+	}
 </style>
