@@ -2,8 +2,11 @@ import { concatAST, Kind, } from "graphql";
 import { oldVisit, } from "@graphql-codegen/plugin-helpers";
 import { ClientSideBaseVisitor, } from "@graphql-codegen/visitor-plugin-common";
 import pascalCase from "just-pascal-case";
+// The main codegen plugin.
 export const plugin = (schema, documents, config) => {
+    // Get all graphql documents
     const allAst = concatAST(documents.map((d) => d.document));
+    // Get all fragments
     const allFragments = [
         ...allAst.definitions.filter((d) => d.kind === Kind.FRAGMENT_DEFINITION).map((fragmentDef) => ({
             node: fragmentDef,
@@ -13,9 +16,14 @@ export const plugin = (schema, documents, config) => {
         })),
         ...(config.externalFragments || []),
     ];
+    //   Create the visitor
     const visitor = new ClientSideBaseVisitor(schema, allFragments, config, { documentVariableSuffix: "Doc" }, documents);
+    //   Visit all the documents
     const visitorResult = oldVisit(allAst, { leave: visitor });
+    // Filter out the operations
     const operations = allAst.definitions.filter((d) => d.kind === Kind.OPERATION_DEFINITION);
+    //   The default required types. These should probably live somewhere else and be imported
+    //   TODO: move to a file
     const defaultTypes = `
 
 type FetchWrapperArgs<T> = {
@@ -31,6 +39,7 @@ interface CacheFunctionOptions {
 	update?: boolean
 }
 `;
+    // This is where the string that will be written to .gq files is created
     const ops = operations
         .map((o) => {
         var _a;
@@ -57,6 +66,8 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
 `;
             }
             else if (o.operation === "mutation") {
+                // This is where the mutation code is generated
+                // We're grabbing the mutation name and using it as a string in the generated code
                 operations += `
 export const ${name} = ({ variables }: SubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
@@ -70,6 +81,7 @@ Promise<GFetchReturnWithErrors<${op}>> =>
         }
     })
         .join("\n");
+    // The imports that are included at the top of the generated file
     const imports = [
         `import { writable } from "svelte/store"`,
         `import { g } from '${config.gPath}'`,
