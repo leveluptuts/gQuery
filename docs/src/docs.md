@@ -45,8 +45,6 @@ vite: {
 ...
 ```
 
-> 👀: Loading via schema only available currently. loading via api url coming soon.
-
 ### 3. Add .graphql files
 
 ```graphql
