@@ -16,9 +16,10 @@
 		</a>
 		<nav>
 			<h5>Docs</h5>
-			<a href="#how-to-use">How To Use</a>
-			<a href="#examples">Examples</a>
-			<a href="#codegen-in-depth">Codegen In Depth</a>
+			<a href="/#how-to-use">How To Use</a>
+			<a href="/#examples">Examples</a>
+			<a href="/#codegen-in-depth">Codegen In Depth</a>
+			<a href="/contributing">Contributing</a>
 
 			<h5>Links</h5>
 			<a href="https://github.com/leveluptuts/gQuery/tree/main/example" target="_blank"
