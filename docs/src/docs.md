@@ -5,7 +5,7 @@
 ### 0. Install
 
 ```shell
-npm install --save @leveluptuts/g-query
+npm install --save @leveluptuts/g-query graphql-tag
 ```
 
 ### 1. Initialize G
