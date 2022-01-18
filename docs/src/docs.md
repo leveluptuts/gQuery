@@ -29,6 +29,7 @@ export const g = new GFetch({
 import gQueryCodegen from '@leveluptuts/g-query/codegen'
 
 ...
+vite: {
 	plugins: [
 		gQueryCodegen({
 			// Required
@@ -39,6 +40,7 @@ import gQueryCodegen from '@leveluptuts/g-query/codegen'
 			debug: false  // boolean, this adds logging for gq files deleted and on codegen
 		})
 	],
+}
 ...
 ```
 
@@ -94,6 +96,8 @@ This also gives us a "get" function for queries based on the query name. ie "get
 	// $: console.log($user.user) //data available for ssr
 </script>
 ```
+
+---
 
 ## Examples
 
@@ -166,11 +170,13 @@ mutation makeUserAdmin($_id: ID!) {
 
 Not available yet, but should be fairly trivial with the current API, I just don't use them much, so I haven't invested the time. This code is well documented, so feel free to submit a PR.
 
+---
+
 ## Codegen In Depth
 
 This section isn't required to read, but if you are the curious type, this will give you some insight into how codegen plays a role in g-query and what our output looks like.
 
-We use the wonderful
+We use the wonderful https://www.graphql-code-generator.com/ as the basis for all of our codegen.
 
 ### What is actually generated?
 
@@ -268,6 +274,8 @@ export const deleteTag = ({
 
 You can see from this, we have all the types we would need as well as our two usable functions and our Svelte writable.
 
+---
+
 ## FAQ / WTF
 
 ### Q? How tf do I update the cache?
@@ -277,7 +285,7 @@ It's a Svelte Writable Store. So after a mutation you can quickly and easily man
 ```javascript
 import { user, someMutation } from './UserQueries.gq';
 
-$user.user = null; // clears the cache
+$user.user = null; // clears the cache object
 
 $user.user = await someMutation({ variables }); // if this returns the correct data
 ```
@@ -292,7 +300,3 @@ import { user, someMutation } from './UserQueries.gq';
 
 await someMutation({ variables, store: user });
 ```
-
-### Q? Why can't I use this yet?
-
-IT'S GETTING CLOSER
