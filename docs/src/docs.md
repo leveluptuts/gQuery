@@ -52,9 +52,9 @@ query currentUser {
 }
 ```
 
-### 4. Use that thang
+### 4. Use it
 
-The codegen will find the file and spit out a file next to it. Named
+Run your dev process. Because gQuery uses a plugin to control the codegen, it will remove all .gq files then regenerate anytime there is a change to .graphql files. The codegen will find the file and spit out a file next to it. Named
 
 ```
 FileName.gq.ts
