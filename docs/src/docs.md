@@ -14,10 +14,12 @@ npm install --save @leveluptuts/g-query
 // src/lib/config/g.ts
 
 export const g = new GFetch({
-	path: Environment.apiURL //whatever your api url is here
+	path: 'https://yourapiurl.com/graphql' //whatever your api url is here
 	// More config options coming, for now this is just path to your graphql api
 });
 ```
+
+> 👀: This expects that you have a Graphql API already running. This can be any valid graphql api url.
 
 ### 2. Add GraphQL Codegen Plugin to Svelte Kit
 
@@ -39,6 +41,8 @@ import gQueryCodegen from '@leveluptuts/g-query/codegen'
 	],
 ...
 ```
+
+> 👀: Loading via schema only available currently. loading via api url coming soon.
 
 ### 3. Add .graphql files
 
@@ -161,6 +165,12 @@ mutation makeUserAdmin($_id: ID!) {
 ### Subscription
 
 Not available yet, but should be fairly trivial with the current API, I just don't use them much, so I haven't invested the time. This code is well documented, so feel free to submit a PR.
+
+## Codegen In Depth
+
+This section isn't required to read, but if you are the curious type, this will give you some insight into how codegen plays a role in g-query and what our output looks like.
+
+We use the wonderful
 
 ### What is actually generated?
 
