@@ -10,7 +10,6 @@
     "@graphql-codegen/plugin-helpers": "^2.3.1",
     "@graphql-codegen/typescript-operations": "^2.2.1",
     "@graphql-codegen/visitor-plugin-common": "^2.5.1",
-    "@leveluptuts/svelte-toy": "^0.0.17",
     "camel-case": "^4.1.2",
     "execa": "^6.0.0",
     "graphql": "^16.2.0",
