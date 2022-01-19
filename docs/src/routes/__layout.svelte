@@ -18,6 +18,7 @@
 			<h5>Docs</h5>
 			<a href="/#how-to-use">How To Use</a>
 			<a href="/#examples">Examples</a>
+			<a href="/#dev-tools">Dev Tools</a>
 			<a href="/#codegen-in-depth">Codegen In Depth</a>
 			<a href="/contributing">Contributing</a>
 
