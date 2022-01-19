@@ -171,6 +171,41 @@ Not available yet, but should be fairly trivial with the current API, I just don
 
 ---
 
+## Dev Tools
+
+We have some really neat dev tools available for gQuery via
+
+```shell
+@leveluptuts/svelte-toy
+```
+
+These dev tools live in your project and can easily be added by making a new component. You can name it whatever you would like.
+
+```html
+// DevTools.svelte
+
+<script lang="ts">
+	import { getStores } from '@leveluptuts/g-query';
+	import SvelteToy from '@leveluptuts/svelte-toy/Toy.svelte'; // npm install --save @leveluptuts/svelte-toy
+
+	const modules = import.meta.globEager('./**/*.gq.ts'); // finds all gq.ts files in the current directory and subdirectories
+	let stores = getStores(modules);
+</script>
+
+<SvelteToy register="{stores}" />
+```
+
+Then you can use them by adding to your project easily. We hide ours in production and you probably should as well.
+
+```html
+<!-- 👀 isDevelopment isn't something that exists without you making it. -->
+{#if isDevelopment}
+<DevTools />
+{/if}
+```
+
+---
+
 ## Codegen In Depth
 
 This section isn't required to read, but if you are the curious type, this will give you some insight into how codegen plays a role in g-query and what our output looks like.
