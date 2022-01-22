@@ -9,6 +9,9 @@ export class GFetch extends Object {
     constructor(options) {
         super();
         const { path } = options;
+        if (!path) {
+            throw new Error("Unexpected error: missing path");
+        }
         this.path = path;
         this.fetch = this.fetch.bind(this);
     }

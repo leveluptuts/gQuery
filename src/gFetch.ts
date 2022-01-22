@@ -46,7 +46,7 @@ export declare type GFetchQueries = {
 };
 
 export const stringifyDocument = (
-  node: string | DefinitionNode | DocumentNode
+  node: string | DefinitionNode | DocumentNode,
 ): string => {
   let str = (typeof node !== "string" ? print(node) : node)
     .replace(/([\s,]|#[^\n\r]+)+/g, " ")
@@ -76,6 +76,9 @@ export class GFetch extends Object {
   constructor(options: GClientOptions) {
     super();
     const { path } = options;
+    if (!path) {
+      throw new Error("Unhandled exception: path is required");
+    }
     this.path = path;
     this.fetch = this.fetch.bind(this);
   }
@@ -85,7 +88,7 @@ export class GFetch extends Object {
   public async fetch<T>({
     queries,
     fetch,
-  }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>> {
+  }: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
     // let document: DocumentNode = addTypenameToDocument(queries[0].query);
     let documentString: string = stringifyDocument(queries[0].query);
     const newQueries = {
