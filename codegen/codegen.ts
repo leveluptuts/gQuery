@@ -61,12 +61,6 @@ export const plugin: PluginFunction<any> = (
   //   The default required types. These should probably live somewhere else and be imported
   //   TODO: move to a file
   const defaultTypes = `
-
-type FetchWrapperArgs<T> = {
-	fetch: typeof fetch,
-	variables?: T,
-}
-
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
