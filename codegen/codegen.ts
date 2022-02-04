@@ -88,7 +88,10 @@ interface CacheFunctionOptions {
 
         if (o.operation === "query") {
           operations += `
-export const ${name} = writable<GFetchReturnWithErrors<${op}>>()
+export const ${name} = writable<GFetchReturnWithErrors<${op}>>({
+	errors: [],
+	gQueryStatus: 'LOADING',
+})
 
 // Cached
 export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
@@ -96,7 +99,7 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
 		queries: [{ query: ${pascalName}Doc, variables }],
 		fetch
 	})
-	await ${name}.set({ ...data, errors: data?.errors, gQueryStatus: 'LOADED' })	
+	${name}.set({ ...data, errors: data?.errors, gQueryStatus: 'LOADED' })
 	return data
 }
 

@@ -16,7 +16,7 @@ import { DefinitionNode, DocumentNode, print } from "graphql";
 //  4. Doesn't use it's own cache, ie, would rely on Svelte's stores
 export declare type GFetchQueryDefault = {
   errors?: Error[];
-  gQueryStatus: "LOADED";
+  gQueryStatus: "LOADED" | "LOADING";
 };
 
 type OptionalPropertyNames<T> = {

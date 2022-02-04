@@ -1,7 +1,7 @@
 import { DefinitionNode, DocumentNode } from "graphql";
 export declare type GFetchQueryDefault = {
     errors?: Error[];
-    gQueryStatus: "LOADED";
+    gQueryStatus: "LOADED" | "LOADING";
 };
 declare type OptionalPropertyNames<T> = {
     [K in keyof T]-?: {} extends {
