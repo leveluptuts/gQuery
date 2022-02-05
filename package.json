@@ -15,7 +15,8 @@
     "graphql": "^16.2.0",
     "just-pascal-case": "^3.0.1",
     "pascal-case": "^3.1.2",
-    "svelte": "^3.44.3"
+    "svelte": "^3.44.3",
+    "vite": "^2.7.13"
   },
   "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
   "devDependencies": {

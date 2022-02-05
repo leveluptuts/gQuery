@@ -36,6 +36,6 @@ export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
     constructor(options: GClientOptions);
-    fetch<T>({ queries, fetch, }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>>;
+    fetch<T>({ queries, fetch, }: gFetchProperties): Promise<GFetchReturnWithErrors<T>>;
 }
 export {};
