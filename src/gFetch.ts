@@ -61,6 +61,7 @@ type gFetchProperties = {
 
 export type GClientOptions = {
   path?: string;
+  headers?: { [key: string]?: string };
 };
 
 export type GGetParameters<Variables> = {
@@ -72,10 +73,12 @@ export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
   public path: string;
+  public headers?: { [key: string]: string }
 
   constructor(options: GClientOptions) {
     super();
-    const { path } = options;
+    const { path, headers } = options;
+    this.headers = headers;
     this.path = path;
     this.fetch = this.fetch.bind(this);
   }
@@ -99,7 +102,7 @@ export class GFetch extends Object {
     const res = await fetch(this.path, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...this.headers },
       body: JSON.stringify(newQueries),
     });
 
