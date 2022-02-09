@@ -63,7 +63,7 @@ export const plugin: PluginFunction<any> = (
   const defaultTypes = `
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
-  headers?: Headers,
+  headers?: { [key: string]: string },
   fetch?: typeof fetch;
 }
 

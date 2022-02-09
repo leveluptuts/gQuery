@@ -57,25 +57,25 @@ export const stringifyDocument = (
 type gFetchProperties = {
   queries: GFetchQueries[];
   fetch: typeof fetch;
-  headers?: Headers;
+  headers?: { [key: string]: string };
 };
 
 export type GClientOptions = {
   path?: string;
-  headers?: Headers;
+  headers?: { [key: string]: string };
 };
 
 export type GGetParameters<Variables> = {
   variables?: Variables;
   fetch?: typeof fetch;
-  headers?: Headers;
+  headers?: { [key: string]: string };
 };
 
 export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
   public path: string;
-  public headers: Headers;
+  public headers: { [key: string]: string };
 
   constructor(options: GClientOptions) {
     super();
@@ -105,7 +105,7 @@ export class GFetch extends Object {
     const res = await fetch(this.path, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json", ...this.headers || {} as Headers, ...headers || {} as Headers },
+      headers: { "Content-Type": "application/json", ...this.headers || {} as { [key: string]: string }, ...headers || {} as { [key: string]: string } },
       body: JSON.stringify(newQueries),
     });
 

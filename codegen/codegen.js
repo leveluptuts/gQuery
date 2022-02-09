@@ -27,7 +27,7 @@ export const plugin = (schema, documents, config) => {
     const defaultTypes = `
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
-  headers?: Headers,
+  headers?: { [key: string]: string },
   fetch?: typeof fetch;
 }
 

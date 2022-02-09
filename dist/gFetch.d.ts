@@ -24,21 +24,29 @@ export declare const stringifyDocument: (node: string | DefinitionNode | Documen
 declare type gFetchProperties = {
     queries: GFetchQueries[];
     fetch: typeof fetch;
-    headers?: Headers;
+    headers?: {
+        [key: string]: string;
+    };
 };
 export declare type GClientOptions = {
     path?: string;
-    headers?: Headers;
+    headers?: {
+        [key: string]: string;
+    };
 };
 export declare type GGetParameters<Variables> = {
     variables?: Variables;
     fetch?: typeof fetch;
-    headers?: Headers;
+    headers?: {
+        [key: string]: string;
+    };
 };
 export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
-    headers: Headers;
+    headers: {
+        [key: string]: string;
+    };
     constructor(options: GClientOptions);
     fetch<T>({ queries, fetch, headers, }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>>;
 }
