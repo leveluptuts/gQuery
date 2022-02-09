@@ -8,13 +8,14 @@ export const stringifyDocument = (node) => {
 export class GFetch extends Object {
     constructor(options) {
         super();
-        const { path } = options;
+        const { path, headers } = options;
         this.path = path;
+        this.headers = headers;
         this.fetch = this.fetch.bind(this);
     }
     // * gFetch
     // This is a fetcher that returns a promise that resolves to a graphql response
-    async fetch({ queries, fetch, }) {
+    async fetch({ queries, fetch, headers, }) {
         // let document: DocumentNode = addTypenameToDocument(queries[0].query);
         let documentString = stringifyDocument(queries[0].query);
         const newQueries = {
@@ -27,7 +28,7 @@ export class GFetch extends Object {
         const res = await fetch(this.path, {
             method: "POST",
             credentials: "include",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", ...this.headers, ...headers },
             body: JSON.stringify(newQueries),
         });
         // Gets the data back from the server

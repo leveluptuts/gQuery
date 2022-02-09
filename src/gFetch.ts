@@ -31,9 +31,9 @@ type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
 
 type SpreadTwo<L, R> = Id<
   Pick<L, Exclude<keyof L, keyof R>> &
-    Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
-    Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>> &
-    SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
+  Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
+  Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>> &
+  SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
 >;
 
 type Spread<A extends readonly [...any]> = A extends [infer L, ...infer R]
@@ -57,26 +57,30 @@ export const stringifyDocument = (
 type gFetchProperties = {
   queries: GFetchQueries[];
   fetch: typeof fetch;
+  headers?: Headers;
 };
 
 export type GClientOptions = {
   path?: string;
+  headers?: Headers;
 };
 
 export type GGetParameters<Variables> = {
   variables?: Variables;
-  fetch: typeof fetch;
+  headers?: Headers;
 };
 
 export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
   public path: string;
+  public headers: Headers;
 
   constructor(options: GClientOptions) {
     super();
-    const { path } = options;
+    const { path, headers } = options;
     this.path = path;
+    this.headers = headers;
     this.fetch = this.fetch.bind(this);
   }
 
@@ -85,6 +89,7 @@ export class GFetch extends Object {
   public async fetch<T>({
     queries,
     fetch,
+    headers,
   }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>> {
     // let document: DocumentNode = addTypenameToDocument(queries[0].query);
     let documentString: string = stringifyDocument(queries[0].query);
@@ -99,7 +104,7 @@ export class GFetch extends Object {
     const res = await fetch(this.path, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...this.headers || {} as Headers, ...headers || {} as Headers },
       body: JSON.stringify(newQueries),
     });
 
