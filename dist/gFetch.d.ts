@@ -32,6 +32,7 @@ export declare type GClientOptions = {
 };
 export declare type GGetParameters<Variables> = {
     variables?: Variables;
+    fetch?: typeof fetch;
     headers?: Headers;
 };
 export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;

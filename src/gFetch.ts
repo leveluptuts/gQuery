@@ -67,6 +67,7 @@ export type GClientOptions = {
 
 export type GGetParameters<Variables> = {
   variables?: Variables;
+  fetch?: typeof fetch;
   headers?: Headers;
 };
 

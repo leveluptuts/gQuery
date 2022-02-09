@@ -51,7 +51,7 @@ export const plugin: PluginFunction<any> = (
   );
 
   //   Visit all the documents
-  const visitorResult = oldVisit(allAst, { leave: visitor });
+  const visitorResult = oldVisit(allAst, { leave: visitor as any });
 
   // Filter out the operations
   const operations = allAst.definitions.filter(
@@ -64,6 +64,7 @@ export const plugin: PluginFunction<any> = (
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
   headers?: Headers,
+  fetch?: typeof fetch;
 }
 
 interface CacheFunctionOptions {
@@ -89,10 +90,10 @@ export const ${name} = writable<GFetchReturnWithErrors<${op}>>({
 })
 
 // Cached
-export async function get${pascalName}({ fetch, variables, headers }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
+export async function get${pascalName}({ fetch: f, variables, headers }: GGetParameters<${opv}>, options?: CacheFunctionOptions) {
 	const data = await g.fetch<${op}>({
 		queries: [{ query: ${pascalName}Doc, variables }],
-		fetch,
+		fetch: f || fetch,
     headers,
 	})
 	${name}.set({ ...data, errors: data?.errors, gQueryStatus: 'LOADED' })
@@ -104,11 +105,11 @@ export async function get${pascalName}({ fetch, variables, headers }: GGetParame
           // This is where the mutation code is generated
           // We're grabbing the mutation name and using it as a string in the generated code
           operations += `
-export const ${name} = ({ variables, headers }: SubscribeWrapperArgs<${opv}>):
+export const ${name} = ({ variables, headers, fetch: f }: SubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
 	g.fetch<${op}>({
 		queries: [{ query: ${pascalName}Doc, variables }],
-		fetch,
+		fetch: f || fetch,
     headers,
 	})
 `;

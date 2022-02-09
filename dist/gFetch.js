@@ -28,7 +28,7 @@ export class GFetch extends Object {
         const res = await fetch(this.path, {
             method: "POST",
             credentials: "include",
-            headers: { "Content-Type": "application/json", ...this.headers, ...headers },
+            headers: { "Content-Type": "application/json", ...this.headers || {}, ...headers || {} },
             body: JSON.stringify(newQueries),
         });
         // Gets the data back from the server

@@ -12,12 +12,12 @@ async function cleanGQ({ debug = false }) {
     });
 }
 // Runs graphql codegen
-async function gQueryGenerate({ schema, out, gPath, debug = false }) {
+async function gQueryGenerate({ schema, out, gPath, debug = false, documents = "./src/**/*.graphql" }) {
     debug && console.log("🤖 starting codegen");
     // the actual codegen process.
     await generate({
         schema,
-        documents: "./src/**/*.graphql",
+        documents,
         generates: {
             // * Generates the types for your schema
             [`${process.cwd()}/${out}/types.gq.ts`]: {
@@ -45,7 +45,7 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }) {
         },
     }, true);
 }
-export default function levelupViteCodegen({ schema, out, gPath, debug = false, }) {
+export default function levelupViteCodegen({ schema, out, gPath, documents = "./src/**/*.graphql", debug = false, }) {
     if (!schema) {
         throw new Error("No schema provided");
     }
@@ -61,7 +61,7 @@ export default function levelupViteCodegen({ schema, out, gPath, debug = false, 
             console.log("build start");
             try {
                 await cleanGQ({ debug });
-                await gQueryGenerate({ schema, out, gPath, debug });
+                await gQueryGenerate({ schema, out, gPath, debug, documents });
                 return;
             }
             catch (e) {
