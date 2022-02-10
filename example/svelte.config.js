@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
 import preprocess from 'svelte-preprocess';
-import gQueryCodegen from '@leveluptuts/g-query/codegen';
+import gQueryCodegen from '@juanvillacortac/g-query/codegen';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {

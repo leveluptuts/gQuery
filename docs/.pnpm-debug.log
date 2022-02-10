@@ -21,7 +21,7 @@
       ],
       "license": "ISC",
       "module": "./dist/index.js",
-      "name": "@leveluptuts/svelte-element-query",
+      "name": "@juanvillacortac/svelte-element-query",
       "prepublishOnly": "npm run tsc",
       "scripts": {
         "build": "tsc",
@@ -60,7 +60,7 @@
       "exports": {
         ".": "./index.js"
       },
-      "name": "@leveluptuts/auto-form",
+      "name": "@juanvillacortac/auto-form",
       "scripts": {
         "build": "svelte-kit build",
         "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -109,7 +109,7 @@
         "./Markdown.svelte": "./Markdown.svelte",
         ".": "./index.js"
       },
-      "name": "@leveluptuts/auto-form",
+      "name": "@juanvillacortac/auto-form",
       "type": "module",
       "version": "0.0.5",
       "svelte": "./index.js"
@@ -153,7 +153,7 @@
         "graphql"
       ],
       "license": "ISC",
-      "name": "@leveluptuts/g-query",
+      "name": "@juanvillacortac/g-query",
       "repository": {
         "type": "git",
         "url": "git+https://github.com/leveluptuts/gQuery.git"
@@ -180,7 +180,7 @@
       },
       "license": "ISC",
       "main": "index.js",
-      "name": "@leveluptuts/shared",
+      "name": "@juanvillacortac/shared",
       "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
       },
@@ -209,7 +209,7 @@
       "exports": {
         ".": "./SideMenu.svelte"
       },
-      "name": "@leveluptuts/svelte-side-menu",
+      "name": "@juanvillacortac/svelte-side-menu",
       "scripts": {
         "build": "svelte-kit build",
         "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -248,7 +248,7 @@
         "./SideMenu.svelte": "./SideMenu.svelte",
         ".": "./SideMenu.svelte"
       },
-      "name": "@leveluptuts/svelte-side-menu",
+      "name": "@juanvillacortac/svelte-side-menu",
       "type": "module",
       "version": "0.0.4",
       "svelte": "./SideMenu.svelte"
@@ -281,7 +281,7 @@
       ],
       "license": "MIT",
       "main": "src/index.js",
-      "name": "@leveluptuts/tables",
+      "name": "@juanvillacortac/tables",
       "repository": {
         "type": "git",
         "url": "git+https://github.com/vincjo/svelte-simple-datatables.git"
@@ -317,8 +317,8 @@
         "tslib": "^2.0.0",
         "typescript": "^4.5.4"
       },
-      "name": "@leveluptuts/svelte-toy",
-      "repository": "@leveluptuts/svelte-toy",
+      "name": "@juanvillacortac/svelte-toy",
+      "repository": "@juanvillacortac/svelte-toy",
       "type": "module",
       "version": "0.0.17",
       "exports": {
@@ -337,7 +337,7 @@
       "dependencies": {
         "@graphql-tools/schema": "^8.3.1",
         "@js-temporal/polyfill": "^0.3.0",
-        "@leveluptuts/shared": "workspace:^1.0.0",
+        "@juanvillacortac/shared": "workspace:^1.0.0",
         "@mailchimp/mailchimp_marketing": "^3.0.72",
         "@mux/mux-node": "^3.3.1",
         "@sentry/apm": "^5.27.1",
@@ -382,7 +382,7 @@
         "@graphql-codegen/schema-ast": "^2.4.1",
         "@graphql-codegen/typescript-resolvers": "^2.4.3",
         "@graphql-eslint/eslint-plugin": "^3.6.0",
-        "@leveluptuts/prettier-config": "^1.0.1",
+        "@juanvillacortac/prettier-config": "^1.0.1",
         "@luckycatfactory/esbuild-graphql-loader": "^3.7.0",
         "@types/bcryptjs": "^2.4.2",
         "@types/braintree": "^2.22.15",
@@ -426,7 +426,7 @@
         "typescript": "^4.5.4"
       },
       "exports": "./dist/index.js",
-      "name": "@leveluptuts/api",
+      "name": "@juanvillacortac/api",
       "node": "^12.20.0 || >=14.13.1",
       "private": true,
       "scripts": {
@@ -457,29 +457,29 @@
       "license": "ISC",
       "author": "Level Up Team",
       "scripts": {
-        "all:package": "pnpm recursive run package --filter @leveluptuts/svelte-toy @leveluptuts/svelte-side-menu @leveluptuts/auto-form",
+        "all:package": "pnpm recursive run package --filter @juanvillacortac/svelte-toy @juanvillacortac/svelte-side-menu @juanvillacortac/auto-form",
         "all:install": "pnpm recursive install",
-        "dev": "pnpm recursive run dev --filter @leveluptuts/api @leveluptuts/ui",
+        "dev": "pnpm recursive run dev --filter @juanvillacortac/api @juanvillacortac/ui",
         "build": "pnpm recursive run build",
         "clean": "pnpm recursive exec -- rm -rf node_modules; rm shrinkwrap.yaml; rm -rf node_modules; rm -r pnpm-lock.yaml",
         "clean:lock": "find . -name 'node_modules' -type d -prune -print | xargs du -chs",
-        "api:dev": "pnpm recursive run dev --filter @leveluptuts/api",
-        "api:codegen": "pnpm recursive run codegen --filter @leveluptuts/api",
-        "api:build": "pnpm recursive run buildOnce --filter @leveluptuts/api",
-        "ui:dev": "pnpm recursive run dev --filter @leveluptuts/ui",
-        "ui:build": "pnpm recursive run build --filter @leveluptuts/ui",
-        "ui:update": "pnpm recursive --filter @leveluptuts/ui up -L -i",
-        "ui:test": "pnpm recursive run test --filter @leveluptuts/ui",
-        "ui:test:run": "pnpm recursive run devTest --filter @leveluptuts/ui",
-        "ui:test:open": "pnpm recursive run test:open --filter @leveluptuts/ui",
-        "gQuery:dev": "pnpm recursive run dev --filter @leveluptuts/g-query",
-        "codegen:dev": "pnpm recursive run dev:codegen --filter @leveluptuts/g-query",
-        "package:build": "pnpm recursive run package --filter @leveluptuts/svelte-toy",
-        "menu:dev": "pnpm recursive run dev --filter @leveluptuts/svelte-side-menu",
-        "menu:package": "pnpm recursive run package --filter @leveluptuts/svelte-side-menu",
-        "toy:dev": "pnpm recursive run dev --filter @leveluptuts/svelte-toy",
-        "toy:package": "pnpm recursive run package --filter @leveluptuts/svelte-toy",
-        "form:package": "pnpm recursive run package --filter @leveluptuts/auto-form",
+        "api:dev": "pnpm recursive run dev --filter @juanvillacortac/api",
+        "api:codegen": "pnpm recursive run codegen --filter @juanvillacortac/api",
+        "api:build": "pnpm recursive run buildOnce --filter @juanvillacortac/api",
+        "ui:dev": "pnpm recursive run dev --filter @juanvillacortac/ui",
+        "ui:build": "pnpm recursive run build --filter @juanvillacortac/ui",
+        "ui:update": "pnpm recursive --filter @juanvillacortac/ui up -L -i",
+        "ui:test": "pnpm recursive run test --filter @juanvillacortac/ui",
+        "ui:test:run": "pnpm recursive run devTest --filter @juanvillacortac/ui",
+        "ui:test:open": "pnpm recursive run test:open --filter @juanvillacortac/ui",
+        "gQuery:dev": "pnpm recursive run dev --filter @juanvillacortac/g-query",
+        "codegen:dev": "pnpm recursive run dev:codegen --filter @juanvillacortac/g-query",
+        "package:build": "pnpm recursive run package --filter @juanvillacortac/svelte-toy",
+        "menu:dev": "pnpm recursive run dev --filter @juanvillacortac/svelte-side-menu",
+        "menu:package": "pnpm recursive run package --filter @juanvillacortac/svelte-side-menu",
+        "toy:dev": "pnpm recursive run dev --filter @juanvillacortac/svelte-toy",
+        "toy:package": "pnpm recursive run package --filter @juanvillacortac/svelte-toy",
+        "form:package": "pnpm recursive run package --filter @juanvillacortac/auto-form",
         "update": "pnpm recursive up -L -i"
       }
     },
@@ -542,8 +542,8 @@
         "tslib": "^2.0.0",
         "typescript": "^4.5.4"
       },
-      "name": "@leveluptuts/svelte-toy",
-      "repository": "@leveluptuts/svelte-toy",
+      "name": "@juanvillacortac/svelte-toy",
+      "repository": "@juanvillacortac/svelte-toy",
       "scripts": {
         "build": "svelte-kit build",
         "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -563,7 +563,7 @@
     "initial": {
       "dependencies": {
         "@fontsource/fira-mono": "^4.5.0",
-        "@leveluptuts/g-query": "^0.1.9",
+        "@juanvillacortac/g-query": "^0.1.9",
         "@lukeed/uuid": "^2.0.0",
         "cookie": "^0.4.1",
         "graphql-tag": "^2.12.6"
@@ -606,11 +606,11 @@
       "dependencies": {
         "@dimfeld/svelte-lazyload": "^0.0.4",
         "@js-temporal/polyfill": "^0.3.0",
-        "@leveluptuts/auto-form": "workspace:^0.0.5",
-        "@leveluptuts/shared": "workspace:^1.0.0",
-        "@leveluptuts/svelte-element-query": "workspace:^1.0.5",
-        "@leveluptuts/svelte-side-menu": "workspace:^0.0.4",
-        "@leveluptuts/tables": "workspace:^0.1.26",
+        "@juanvillacortac/auto-form": "workspace:^0.0.5",
+        "@juanvillacortac/shared": "workspace:^1.0.0",
+        "@juanvillacortac/svelte-element-query": "workspace:^1.0.5",
+        "@juanvillacortac/svelte-side-menu": "workspace:^0.0.4",
+        "@juanvillacortac/tables": "workspace:^0.1.26",
         "@mux/upchunk": "^2.2.2",
         "@mux/videojs-kit": "^0.7.0",
         "@sentry/browser": "^6.16.1",
@@ -641,8 +641,8 @@
       "devDependencies": {
         "@graphql-codegen/cli": "^2.3.1",
         "@graphql-codegen/typescript": "^2.4.2",
-        "@leveluptuts/g-query": "workspace:0.1.4",
-        "@leveluptuts/svelte-toy": "workspace:^0.0.17",
+        "@juanvillacortac/g-query": "workspace:0.1.4",
+        "@juanvillacortac/svelte-toy": "workspace:^0.0.17",
         "@milahu/patch-package-with-pnpm-support": "git@github.com:milahu/patch-package-with-pnpm-support",
         "@sveltejs/adapter-node": "^1.0.0-next.60",
         "@sveltejs/kit": "^1.0.0-next.218",
@@ -680,7 +680,7 @@
         "tslib": "^2.3.1",
         "typescript": "^4.5.4"
       },
-      "name": "@leveluptuts/ui",
+      "name": "@juanvillacortac/ui",
       "scripts": {
         "build": "VITE_ENV=production svelte-kit build",
         "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -713,7 +713,7 @@
     "resolution": "link:../shared",
     "wanted": {
       "dependentId": "packages/api",
-      "name": "@leveluptuts/shared",
+      "name": "@juanvillacortac/shared",
       "rawSpec": "workspace:^1.0.0"
     }
   },
@@ -1462,10 +1462,10 @@
     }
   },
   "112 debug pnpm:_dependency_resolved": {
-    "resolution": "registry.npmjs.org/@leveluptuts/prettier-config/1.0.1",
+    "resolution": "registry.npmjs.org/@juanvillacortac/prettier-config/1.0.1",
     "wanted": {
       "dependentId": "packages/api",
-      "name": "@leveluptuts/prettier-config",
+      "name": "@juanvillacortac/prettier-config",
       "rawSpec": "^1.0.1"
     }
   },
@@ -3078,12 +3078,12 @@
     "status": "resolved"
   },
   "338 debug pnpm:progress": {
-    "packageId": "registry.npmjs.org/@leveluptuts/prettier-config/1.0.1",
+    "packageId": "registry.npmjs.org/@juanvillacortac/prettier-config/1.0.1",
     "requester": "/Users/scotttolinski/Sites/Level-Up-Tutorials",
     "status": "found_in_store"
   },
   "339 debug pnpm:progress": {
-    "packageId": "registry.npmjs.org/@leveluptuts/prettier-config/1.0.1",
+    "packageId": "registry.npmjs.org/@juanvillacortac/prettier-config/1.0.1",
     "requester": "/Users/scotttolinski/Sites/Level-Up-Tutorials",
     "status": "resolved"
   },
@@ -19055,7 +19055,7 @@
     "resolution": "link:../svelte-toy/package",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/svelte-toy",
+      "name": "@juanvillacortac/svelte-toy",
       "rawSpec": "workspace:^0.0.17"
     }
   },
@@ -19063,7 +19063,7 @@
     "resolution": "link:../auto-form/package",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/auto-form",
+      "name": "@juanvillacortac/auto-form",
       "rawSpec": "workspace:^0.0.5"
     }
   },
@@ -19071,7 +19071,7 @@
     "resolution": "link:../shared",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/shared",
+      "name": "@juanvillacortac/shared",
       "rawSpec": "workspace:^1.0.0"
     }
   },
@@ -19079,7 +19079,7 @@
     "resolution": "link:../Svelte-Element-Query",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/svelte-element-query",
+      "name": "@juanvillacortac/svelte-element-query",
       "rawSpec": "workspace:^1.0.5"
     }
   },
@@ -19087,7 +19087,7 @@
     "resolution": "link:../side-menu/package",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/svelte-side-menu",
+      "name": "@juanvillacortac/svelte-side-menu",
       "rawSpec": "workspace:^0.0.4"
     }
   },
@@ -19095,7 +19095,7 @@
     "resolution": "link:../svelte-simple-datatables",
     "wanted": {
       "dependentId": "packages/ui",
-      "name": "@leveluptuts/tables",
+      "name": "@juanvillacortac/tables",
       "rawSpec": "workspace:^0.1.26"
     }
   },
@@ -19104,9 +19104,9 @@
     "pkgsStack": [],
     "err": {
       "name": "pnpm",
-      "message": "In ../../ui: No matching version found for @leveluptuts/g-query@0.1.4 inside the workspace",
+      "message": "In ../../ui: No matching version found for @juanvillacortac/g-query@0.1.4 inside the workspace",
       "code": "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
-      "stack": "pnpm: In ../../ui: No matching version found for @leveluptuts/g-query@0.1.4 inside the workspace\n    at tryResolveFromWorkspace (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85734:15)\n    at resolveNpm (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85625:39)\n    at Object.resolve (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85857:40)\n    at ctx.requestsQueue.add.priority (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71782:75)\n    at run (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71498:90)\n    at PQueue._tryToStartAnother (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71452:13)\n    at PQueue._next (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71401:14)\n    at run (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71508:18)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"
+      "stack": "pnpm: In ../../ui: No matching version found for @juanvillacortac/g-query@0.1.4 inside the workspace\n    at tryResolveFromWorkspace (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85734:15)\n    at resolveNpm (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85625:39)\n    at Object.resolve (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:85857:40)\n    at ctx.requestsQueue.add.priority (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71782:75)\n    at run (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71498:90)\n    at PQueue._tryToStartAnother (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71452:13)\n    at PQueue._next (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71401:14)\n    at run (/Users/scotttolinski/.nvm/versions/node/v17.0.1/pnpm-global/5/node_modules/.pnpm/pnpm@6.26.0/node_modules/pnpm/dist/pnpm.cjs:71508:18)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"
     }
   }
 }

@@ -2,7 +2,7 @@ import type * as Types from '../graphql/types.gq';
 
 import { writable } from "svelte/store"
 import { g } from '$lib/g'
-import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'
+import type { GFetchReturnWithErrors, GGetParameters } from '@juanvillacortac/g-query'
 import gql from 'graphql-tag';
 export type LatestSeriesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 

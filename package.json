@@ -34,7 +34,7 @@
     "graphql"
   ],
   "license": "ISC",
-  "name": "@leveluptuts/g-query",
+  "name": "@juanvillacortac/g-query",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leveluptuts/gQuery.git"
@@ -47,5 +47,8 @@
   "svelte": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "version": "0.2.2"
+  "version": "0.2.2",
+  "peerDependencies": {
+    "vite": "^2.8.0"
+  }
 }
