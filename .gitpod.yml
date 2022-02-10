@@ -3,8 +3,8 @@
 # and commit this file to your remote git repository to share the goodness with others.
 
 tasks:
-  - init: npm install
-    command: npm run dev
+  - init: npm install -g pnpm && pnpm install
+    command: npm install -g pnpm && pnpm dev
 vscode:
   extensions:
     - dbaeumer.vscode-eslint
