@@ -124,7 +124,7 @@ Promise<GFetchReturnWithErrors<${op}>> =>
   const imports = [
     `import { writable } from "svelte/store"`,
     `import { g } from '${config.gPath}'`,
-    `import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query'`,
+    `import type { GFetchReturnWithErrors, GGetParameters } from '@juanvillacortac/g-query'`,
   ];
 
   return {

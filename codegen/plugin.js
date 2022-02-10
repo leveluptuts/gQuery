@@ -39,7 +39,7 @@ async function gQueryGenerate({ schema, out, gPath, debug = false, documents = "
                 },
                 plugins: [
                     "typescript-operations",
-                    "@leveluptuts/g-query/codegen-plugin", // g-query codegen plugin. ./codegen.ts
+                    "@juanvillacortac/g-query/codegen-plugin", // g-query codegen plugin. ./codegen.ts
                 ],
             },
         },

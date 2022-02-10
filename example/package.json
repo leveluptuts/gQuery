@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@fontsource/fira-mono": "^4.5.0",
-		"@leveluptuts/g-query": "^0.2.1",
-		"@leveluptuts/svelte-toy": "^0.0.18",
+		"@juanvillacortac/g-query": "^0.2.1",
+		"@juanvillacortac/svelte-toy": "^0.0.18",
 		"@lukeed/uuid": "^2.0.0",
 		"cookie": "^0.4.1",
 		"graphql-tag": "^2.12.6"

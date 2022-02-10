@@ -5,7 +5,7 @@
 ### 0. Install
 
 ```shell
-npm install --save @leveluptuts/g-query graphql-tag
+npm install --save @juanvillacortac/g-query graphql-tag
 ```
 
 ### 1. Initialize G
@@ -26,7 +26,7 @@ export const g = new GFetch({
 ```javascript
 // svelte.config.js
 
-import gQueryCodegen from '@leveluptuts/g-query/codegen'
+import gQueryCodegen from '@juanvillacortac/g-query/codegen'
 
 ...
 vite: {
@@ -176,7 +176,7 @@ Not available yet, but should be fairly trivial with the current API, I just don
 We have some really neat dev tools available for gQuery via
 
 ```shell
-@leveluptuts/svelte-toy
+@juanvillacortac/svelte-toy
 ```
 
 These dev tools live in your project and can easily be added by making a new component. You can name it whatever you would like.
@@ -185,8 +185,8 @@ These dev tools live in your project and can easily be added by making a new com
 // DevTools.svelte
 
 <script lang="ts">
-	import { getStores } from '@leveluptuts/g-query';
-	import SvelteToy from '@leveluptuts/svelte-toy/Toy.svelte'; // npm install --save @leveluptuts/svelte-toy
+	import { getStores } from '@juanvillacortac/g-query';
+	import SvelteToy from '@juanvillacortac/svelte-toy/Toy.svelte'; // npm install --save @juanvillacortac/svelte-toy
 
 	const modules = import.meta.globEager('./**/*.gq.ts'); // finds all gq.ts files in the current directory and subdirectories
 	let stores = getStores(modules);
@@ -243,7 +243,7 @@ That will contain the following
 import type * as Types from '../../graphql/types.gq';
 import { writable } from 'svelte/store';
 import { g } from '$lib/config/g';
-import type { GFetchReturnWithErrors, GGetParameters } from '@leveluptuts/g-query';
+import type { GFetchReturnWithErrors, GGetParameters } from '@juanvillacortac/g-query';
 import gql from 'graphql-tag';
 
 export type AdminTagsQueryVariables = Types.Exact<{ [key: string]: never }>;

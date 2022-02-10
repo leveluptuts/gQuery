@@ -34,7 +34,7 @@
     "graphql"
   ],
   "license": "ISC",
-  "name": "@leveluptuts/g-query",
+  "name": "@juanvillacortac/g-query",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leveluptuts/gQuery.git"
