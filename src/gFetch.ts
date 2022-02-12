@@ -85,7 +85,7 @@ export class GFetch extends Object {
   public async fetch<T>({
     queries,
     fetch,
-  }: gFetchProperties | undefined): Promise<GFetchReturnWithErrors<T>> {
+  }: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
     // let document: DocumentNode = addTypenameToDocument(queries[0].query);
     let documentString: string = stringifyDocument(queries[0].query);
     const newQueries = {
@@ -96,19 +96,22 @@ export class GFetch extends Object {
     // This is generic fetch, that is polyfilled via svelte kit
     // graph ql fetches must be POST
     // credentials include for user ssr data
-    const res = await fetch(this.path, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newQueries),
-    });
+    try {
+      const res = await fetch(this.path, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newQueries),
+      });
+      // Gets the data back from the server
+      const data = await res.json();
 
-    // Gets the data back from the server
-    const data = await res.json();
-
-    return {
-      ...data.data,
-      errors: data.errors,
-    };
+      return {
+        ...data.data,
+        errors: data.errors,
+      };
+    } catch (err) {
+      console.error("err", err);
+    }
   }
 }

@@ -24,18 +24,23 @@ export class GFetch extends Object {
         // This is generic fetch, that is polyfilled via svelte kit
         // graph ql fetches must be POST
         // credentials include for user ssr data
-        const res = await fetch(this.path, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newQueries),
-        });
-        // Gets the data back from the server
-        const data = await res.json();
-        return {
-            ...data.data,
-            errors: data.errors,
-        };
+        try {
+            const res = await fetch(this.path, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newQueries),
+            });
+            // Gets the data back from the server
+            const data = await res.json();
+            return {
+                ...data.data,
+                errors: data.errors,
+            };
+        }
+        catch (err) {
+            console.error("err", err);
+        }
     }
 }
 //# sourceMappingURL=gFetch.js.map

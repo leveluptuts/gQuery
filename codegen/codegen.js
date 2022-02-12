@@ -25,12 +25,6 @@ export const plugin = (schema, documents, config) => {
     //   The default required types. These should probably live somewhere else and be imported
     //   TODO: move to a file
     const defaultTypes = `
-
-type FetchWrapperArgs<T> = {
-	fetch: typeof fetch,
-	variables?: T,
-}
-
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
 }
