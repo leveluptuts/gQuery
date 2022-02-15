@@ -8,8 +8,9 @@ export const stringifyDocument = (node) => {
 export class GFetch extends Object {
     constructor(options) {
         super();
-        const { path } = options;
+        const { path, fetchOptions = {} } = options;
         this.path = path;
+        this.fetchOptions = fetchOptions;
         this.fetch = this.fetch.bind(this);
     }
     // * gFetch
@@ -21,18 +22,19 @@ export class GFetch extends Object {
             ...queries[0],
             query: documentString,
         };
+        let data;
         // This is generic fetch, that is polyfilled via svelte kit
         // graph ql fetches must be POST
         // credentials include for user ssr data
         try {
             const res = await fetch(this.path, {
                 method: "POST",
-                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newQueries),
+                ...this.fetchOptions,
             });
             // Gets the data back from the server
-            const data = await res.json();
+            data = await res.json();
             return {
                 ...data.data,
                 errors: data.errors,
@@ -40,6 +42,11 @@ export class GFetch extends Object {
         }
         catch (err) {
             console.error("err", err);
+            return {
+                ...data,
+                gQueryStatus: "ERROR",
+                errors: [err],
+            };
         }
     }
 }

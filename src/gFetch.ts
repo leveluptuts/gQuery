@@ -16,7 +16,7 @@ import { DefinitionNode, DocumentNode, print } from "graphql";
 //  4. Doesn't use it's own cache, ie, would rely on Svelte's stores
 export declare type GFetchQueryDefault = {
   errors?: Error[];
-  gQueryStatus: "LOADED" | "LOADING";
+  gQueryStatus: "LOADED" | "LOADING" | "ERROR";
 };
 
 type OptionalPropertyNames<T> = {
@@ -59,8 +59,13 @@ type gFetchProperties = {
   fetch: typeof fetch;
 };
 
+interface fetchOptions {
+  credentials: "include" | "omit" | "same-origin";
+}
+
 export type GClientOptions = {
-  path?: string;
+  path: string;
+  fetchOptions?: fetchOptions | {};
 };
 
 export type GGetParameters<Variables> = {
@@ -72,11 +77,13 @@ export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
   public path: string;
+  public fetchOptions?: fetchOptions;
 
   constructor(options: GClientOptions) {
     super();
-    const { path } = options;
+    const { path, fetchOptions = {} } = options;
     this.path = path;
+    this.fetchOptions = fetchOptions;
     this.fetch = this.fetch.bind(this);
   }
 
@@ -93,18 +100,20 @@ export class GFetch extends Object {
       query: documentString,
     };
 
+    let data;
+
     // This is generic fetch, that is polyfilled via svelte kit
     // graph ql fetches must be POST
     // credentials include for user ssr data
     try {
       const res = await fetch(this.path, {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newQueries),
+        ...this.fetchOptions,
       });
       // Gets the data back from the server
-      const data = await res.json();
+      data = await res.json();
 
       return {
         ...data.data,
@@ -112,6 +121,11 @@ export class GFetch extends Object {
       };
     } catch (err) {
       console.error("err", err);
+      return {
+        ...data,
+        gQueryStatus: "ERROR",
+        errors: [err] as Error[],
+      };
     }
   }
 }

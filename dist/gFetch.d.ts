@@ -1,7 +1,7 @@
 import { DefinitionNode, DocumentNode } from "graphql";
 export declare type GFetchQueryDefault = {
     errors?: Error[];
-    gQueryStatus: "LOADED" | "LOADING";
+    gQueryStatus: "LOADED" | "LOADING" | "ERROR";
 };
 declare type OptionalPropertyNames<T> = {
     [K in keyof T]-?: {} extends {
@@ -25,8 +25,12 @@ declare type gFetchProperties = {
     queries: GFetchQueries[];
     fetch: typeof fetch;
 };
+interface fetchOptions {
+    credentials: "include" | "omit" | "same-origin";
+}
 export declare type GClientOptions = {
-    path?: string;
+    path: string;
+    fetchOptions?: fetchOptions | {};
 };
 export declare type GGetParameters<Variables> = {
     variables?: Variables;
@@ -35,6 +39,7 @@ export declare type GGetParameters<Variables> = {
 export declare type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 export declare class GFetch extends Object {
     path: string;
+    fetchOptions?: fetchOptions;
     constructor(options: GClientOptions);
     fetch<T>({ queries, fetch, }: gFetchProperties): Promise<GFetchReturnWithErrors<T>>;
 }
