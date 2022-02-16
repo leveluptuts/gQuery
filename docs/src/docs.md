@@ -35,8 +35,8 @@ vite: {
 			// Required
 			// schema: 'http://localhost:3001/graphql' // this can also be a url to a graphql api
 			schema: './src/lib/graphql/schema.graphql', // path to schema, schema is required
-			output: './src/lib/graphql', // Where you want the general schema types to output
-			gPath: '$lib/config/g' // Path to g, created in step 1.
+			out: './src/lib/graphql', // Where you want the general schema types to output
+			gPath: '$lib/config/g', // Path to g, created in step 1.
 			// Optional
 			debug: false  // boolean, this adds logging for gq files deleted and on codegen
 		})
