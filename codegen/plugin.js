@@ -12,7 +12,7 @@ async function cleanGQ({ debug = false }) {
     });
 }
 // Runs graphql codegen
-async function gQueryGenerate({ schema, out, gPath, debug = false }) {
+async function gQueryGenerate({ schema, output, gPath, debug = false }) {
     debug && console.log("🤖 starting codegen");
     // the actual codegen process.
     await generate({
@@ -20,11 +20,11 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }) {
         documents: "./src/**/*.graphql",
         generates: {
             // * Generates the types for your schema
-            [`${process.cwd()}/${out}/types.gq.ts`]: {
+            [`${process.cwd()}/${output}/types.gq.ts`]: {
                 plugins: ["typescript"],
             },
             // * Generates near file .ts files for your fetch functions
-            [`${process.cwd()}/${out}`]: {
+            [`${process.cwd()}/${output}`]: {
                 config: {
                     useTypeImports: true,
                     gPath,
@@ -45,11 +45,11 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }) {
         },
     }, true);
 }
-export default function levelupViteCodegen({ schema, out, gPath, debug = false, }) {
+export default function levelupViteCodegen({ schema, output, gPath, debug = false }) {
     if (!schema) {
         throw new Error("No schema provided");
     }
-    if (!out) {
+    if (!output) {
         throw new Error("No output directory specified for types.");
     }
     if (!gPath) {
@@ -61,7 +61,7 @@ export default function levelupViteCodegen({ schema, out, gPath, debug = false, 
             console.log("build start");
             try {
                 await cleanGQ({ debug });
-                await gQueryGenerate({ schema, out, gPath, debug });
+                await gQueryGenerate({ schema, output, gPath, debug });
                 return;
             }
             catch (e) {
@@ -79,7 +79,7 @@ export default function levelupViteCodegen({ schema, out, gPath, debug = false, 
                     return null;
                 try {
                     await cleanGQ({ debug });
-                    await gQueryGenerate({ schema, out, gPath });
+                    await gQueryGenerate({ schema, output, gPath });
                 }
                 catch (error) {
                     console.log("Something went wrong. Please save the file again.");

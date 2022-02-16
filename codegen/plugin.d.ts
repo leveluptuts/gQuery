@@ -1,7 +1,8 @@
 import type { Plugin } from "vite";
-export default function levelupViteCodegen({ schema, out, gPath, debug, }: {
-    schema: any;
-    out: any;
-    gPath: any;
+export interface GQueryGenerateOptions {
+    schema: string;
+    output: string;
+    gPath: string;
     debug?: boolean;
-}): Plugin;
+}
+export default function levelupViteCodegen({ schema, output, gPath, debug }: GQueryGenerateOptions): Plugin;
