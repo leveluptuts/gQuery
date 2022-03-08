@@ -110,7 +110,8 @@ export class GFetch extends Object {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newQueries),
-        ...this.fetchOptions,
+        credentials: "include",
+        // ...this.fetchOptions,
       });
       // Gets the data back from the server
       data = await res.json();

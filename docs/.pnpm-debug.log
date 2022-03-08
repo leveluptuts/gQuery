@@ -336,7 +336,6 @@
     "initial": {
       "dependencies": {
         "@graphql-tools/schema": "^8.3.1",
-        "@js-temporal/polyfill": "^0.3.0",
         "@leveluptuts/shared": "workspace:^1.0.0",
         "@mailchimp/mailchimp_marketing": "^3.0.72",
         "@mux/mux-node": "^3.3.1",
@@ -605,7 +604,6 @@
     "initial": {
       "dependencies": {
         "@dimfeld/svelte-lazyload": "^0.0.4",
-        "@js-temporal/polyfill": "^0.3.0",
         "@leveluptuts/auto-form": "workspace:^0.0.5",
         "@leveluptuts/shared": "workspace:^1.0.0",
         "@leveluptuts/svelte-element-query": "workspace:^1.0.5",
