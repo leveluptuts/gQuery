@@ -94,6 +94,7 @@ export class GFetch extends Object {
     fetch,
   }: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
     // let document: DocumentNode = addTypenameToDocument(queries[0].query);
+
     let documentString: string = stringifyDocument(queries[0].query);
     const newQueries = {
       ...queries[0],
@@ -110,8 +111,7 @@ export class GFetch extends Object {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newQueries),
-        credentials: "include",
-        // ...this.fetchOptions,
+        ...this.fetchOptions,
       });
       // Gets the data back from the server
       data = await res.json();
