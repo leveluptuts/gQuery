@@ -12,6 +12,7 @@ npm install --save @leveluptuts/g-query graphql-tag
 
 ```javascript
 // src/lib/config/g.ts
+import { GFetch } from '@leveluptuts/g-query'
 
 export const g = new GFetch({
 	path: 'https://yourapiurl.com/graphql' //whatever your api url is here
