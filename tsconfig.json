@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "es2020",
+    "lib": ["es2020", "DOM"],
+    "outDir": "./dist",
+    "declaration": true,
+    "target": "es2020",
+    "importsNotUsedAsValues": "error",
+    "importHelpers": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "noEmitOnError": false,
+
+    /* Additional Checks */ "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts"]
+}

@@ -1,0 +1,7 @@
+query latestSeries {
+	latestPlaylist {
+		_id
+		slug
+		title
+	}
+}

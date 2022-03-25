@@ -1,0 +1,1090 @@
+type Affiliate {
+	_id: ID!
+	affiliateId: ID
+	paypalEmail: String
+	userId: ID
+}
+
+input AffiliateInput {
+	_id: ID
+	affiliateId: ID!
+	paypalEmail: String!
+	userId: ID
+}
+
+type AffiliateSales {
+	_id: ID!
+	affiliate: User
+	affiliateId: ID
+	createdAt: Date
+	order: Order
+	subscription: Sub
+	totalSale: String!
+	type: String
+	user: User
+}
+
+input AffiliateSalesInput {
+	_id: ID
+	affiliateId: ID
+	orderId: ID
+	type: String
+}
+
+input AuthenticateParamsInput {
+	access_token: String
+	access_token_secret: String
+	code: String
+	password: String
+	provider: String
+	user: UserInput
+}
+
+type Author {
+	_id: ID!
+	isAdmin: Boolean
+	isEditor: Boolean
+	photoId: String
+	profile: AuthorProfile
+	social: AuthorSocial
+}
+
+type AuthorProfile {
+	firstName: String
+	lastName: String
+}
+
+type AuthorSocial {
+	facebook: String
+	homepage: String
+	instagram: String
+	twitter: String
+	youtube: String
+}
+
+type AuthorViewsRevenueResponse {
+	authors: [AuthorViewsSummary!]!
+	totals: TotalViewsSummary!
+}
+
+type AuthorViewsSummary {
+	email: String!
+	profile: Profile!
+	revenueShare: Int!
+	viewsInPeriod: Int!
+	viewsPercent: Int!
+}
+
+type CardBg {
+	_id: ID!
+	bgImageCloudId: String
+	name: String
+}
+
+input CardBgInput {
+	bgImageCloudId: String
+	name: String
+}
+
+type Cart {
+	_id: ID
+	name: String
+	price: String
+	salePrice: String
+	sku: String
+	totalSales: Int
+}
+
+input CartInput {
+	_id: ID!
+}
+
+type Choice {
+	_id: ID
+	correct: Boolean
+	hint: String
+	text: String
+}
+
+input ChoiceInput {
+	_id: ID
+	correct: Boolean
+	hint: String
+	text: String
+}
+
+type CodeStarter {
+	_id: ID
+	name: String
+	sandboxUrl: String
+}
+
+input CodeStarterInput {
+	_id: ID
+	name: String
+	sandboxUrl: String
+}
+
+type Comment {
+	_id: ID!
+	author: Author
+	authorId: String
+	authorName: String
+	body: String
+	createdAt: Date
+	pinned: Boolean
+	playlist: Playlist
+	playlistId: String
+	post: Post
+	postId: String
+	repliedToId: String
+	tutorial: Tutorial
+	tutorialId: String
+	updatedAt: Date
+}
+
+input CommentInput {
+	authorId: String
+	authorName: String
+	body: String
+	createdAt: Date
+	playlistId: String
+	postId: String
+	repliedToId: String
+	tutorialId: String
+	updatedAt: Date
+}
+
+input ContactEmailInput {
+	email: String!
+	message: String!
+	name: String!
+	type: String!
+}
+
+enum ContentType {
+	PLAYLIST
+	POST
+	TUTORIAL
+}
+
+type Coupon {
+	_id: ID!
+	amount: Int!
+	createdAt: Date!
+	isPercentageDiscount: Boolean!
+	name: String!
+	products: [String]!
+	updatedAt: Date!
+}
+
+input CouponInput {
+	amount: Int!
+	isPercentageDiscount: Boolean!
+	name: String!
+	products: [String]!
+}
+
+type Course {
+	_id: ID!
+	bgColor: String
+	bgImage: String
+	bgImageCloudId: String
+	color: String
+	logo: String
+	order: Int
+	slug: String!
+	status: Status
+	steps: [Steps]
+	title: String!
+	tutorialsLength: Int
+}
+
+input CourseInput {
+	_id: ID
+	bgColor: String
+	bgImage: String
+	bgImageCloudId: String
+	color: String
+	logo: String
+	order: Int
+	status: Status
+	steps: [StepsInput]
+	title: String
+	tutorialsLength: Int
+}
+
+enum CourseType {
+	POST
+	QUIZ
+	SERIES
+}
+
+input CreateUserInput {
+	email: String
+	password: String
+	username: String
+}
+
+type Customer {
+	customFields: CustomerCustomFields
+	fax: String
+	id: ID!
+	paymentMethods: [PaymentMethod]
+}
+
+type CustomerCustomFields {
+	affiliateId: String
+}
+
+type CustomerReturn {
+	customer: Customer
+	message: String
+	success: Boolean
+}
+
+scalar Date
+
+type Email {
+	address: String!
+	verified: Boolean
+}
+
+type EmailRecord {
+	address: String
+	verified: Boolean
+}
+
+type LoginResult {
+	sessionId: String
+	tokens: Tokens
+	user: User
+}
+
+type MUXAsset {
+	duration: Float
+	id: ID
+	playback_ids: [PlaybackId]
+	status: String
+}
+
+type MUXPlayback {
+	id: ID
+}
+
+type MUXUpload {
+	id: ID
+	status: String
+	url: String
+}
+
+type Mutation {
+	addCC(paymentMethodNonce: String!): CustomerReturn
+	addRole(role: String!, userId: ID!): User
+	addSubscriptionToUser(subId: String!, userId: String!): User
+	addTeamMember(teamMemberInput: TeamMemberInput!): Team
+	applyCancellationOffer: SubscriptionReturn!
+	authenticate(email: String!, password: String!): Boolean!
+	cancelSubscription(cancelNow: Boolean, userId: String): SubscriptionReturn!
+	changePassword(newPassword: String!, oldPassword: String!): Boolean!
+	chargeCc(order: OrderInput!): String
+	claimSeat(teamId: String!, teamMemberEmail: String!): TeamMember
+	createAffiliate(affiliate: AffiliateInput!): Affiliate
+	createCardBg(cardBg: CardBgInput!): CardBg
+	createCodeStarter(codeStarter: CodeStarterInput!): CodeStarter
+	createComment(comment: CommentInput): Comment
+	createCoupon(coupon: CouponInput!): Coupon
+	createCourse(course: CourseInput!): Course
+	createPost(post: PostInput!): Post
+	createPotentialSeries(name: String!): PotentialSeries
+	createQuiz(quiz: QuizInput!): Quiz
+	createQuizResult(quizResult: QuizResultInput!): QuizResult
+	createSeries: Playlist
+	createSubscription(subscription: SubscriptionsInput!): SubscriptionReturn
+	createTeam(teamInput: TeamInput!): Team
+	createTutorial: Tutorial
+	createTutorialViewLog(contentAuthorId: ID!, contentId: ID!): Boolean
+	createUser(email: String!, password: String!): Boolean!
+	deleteCardBg(_id: ID!): Boolean
+	deleteCodeStarter(_id: ID!): Boolean
+	deleteComment(_id: ID!): ID
+	deleteCoupon(_id: ID!): Boolean
+	deleteCourse(_id: ID): Boolean
+	deletePost(_id: ID!): Boolean
+	deleteQuiz(_id: ID!): Boolean
+	deleteTag(_id: ID!): Boolean
+	deleteTags: Boolean
+	deleteTutorialViewLog(contentId: ID!): Boolean
+	deleteUser(userId: ID!): Boolean
+	endMasquerade: Boolean
+	generateSalesReports(gt: Date, lt: Date): Boolean
+	getAsset(id: String!, tutorialId: ID!): MUXAsset
+	importYoutubePlaylist(id: ID!, seriesId: ID!): Playlist
+	loginWithLink(authDigest: String!, email: String!, expirationTimestamp: String!): User
+	logout: Boolean!
+	masquerade(userId: ID!): Boolean
+	reSubscription: SubscriptionReturn
+	refreshAsset(id: String!, tutorialId: ID!): MUXAsset
+	refundOrder(orderId: String!, transactionId: String!): Boolean
+	refundTransaction(transactionId: ID!): Transaction
+	removeInterest(tag: String!): String
+	removeRole(role: String!, userId: ID!): User
+	removeTeamMember(teamId: String!, teamMemberEmail: String!): Team
+	removeUpload(_id: ID!): Tutorial
+	reorderCourses(courses: [CourseInput!]!): [Course]
+	reorderPlaylists: [Playlist]
+	reorderQuizzes(quizzes: [QuizInput!]!): [Quiz]
+	scheduleStudentAccountEmail(studentEmail: String!): Boolean!
+	sendContactEmail(input: ContactEmailInput!): Boolean
+	sendLoginLinkEmail(email: String!): Boolean!
+	sendResetPasswordEmail(email: String!): Boolean!
+	sendStripeSubEmail: Boolean
+	sendSuggestionEmail(suggestion: String!): Boolean
+	sendVerificationEmail(email: String!): Boolean!
+	setInterest(tag: String!): String
+	setNewsletterStatus(email: String, newsletter: String!): User
+	setPassword(
+		authDigest: String!
+		email: String!
+		expirationTimestamp: String!
+		newPassword: String!
+	): Boolean!
+	setPostStatus(_id: ID!, status: String!): Post
+	setQuizStatus(_id: ID!, status: String!): Quiz
+	setStatus(_id: ID!, status: String!): Playlist
+	setTheme(theme: String!): User
+	setUserPlaybackRate(newRate: Float!): User
+	setVisibility(_id: ID!, visibility: Visibility!): Tutorial
+	syncLengths: [Playlist]
+	syncTags: [Tag]
+	testWebhook(type: String!): Boolean
+	toggleAutoPlay: Boolean!
+	toggleBeta: User!
+	toggleComplete(_id: ID!): PotentialSeries
+	toggleIsPremium(_id: ID!): Playlist
+	togglePinned(_id: ID!): Comment
+	toggleRetired(_id: ID!): PotentialSeries
+	toggleRole(role: String!, userId: ID!): User
+	toggleSelected(_id: ID!): PotentialSeries
+	unVote(seriesId: String!, userId: String!): Boolean
+	updateAffiliate(affiliate: AffiliateInput!): Affiliate
+	updateAuthorPaypalEmail(paypalEmail: String!): User
+	updateCC(paymentMethodNonce: String!, paymentMethodToken: String!): CustomerReturn
+	updateCodeStarter(codeStarter: CodeStarterInput!): CodeStarter
+	updateComment(_id: ID, comment: CommentInput): Comment
+	updateCoupon(_id: ID!, coupon: CouponInput!): Coupon
+	updateCourse(course: CourseInput!): Course
+	updateCourseStatus(_id: ID!, status: String!): Course
+	updateNumberOfSeats(numberOfSeats: Int!, teamId: String!): UpdateTeamResult
+	updatePost(id: ID!, post: PostInput!): Post
+	updateQuiz(quiz: QuizInput!): Quiz
+	updateQuizResult(quizResult: QuizResultInput!): QuizResult
+	updateSeries(playlist: PlaylistInput!): Playlist
+	updateSocialCard(socialCardInput: SocialCardInput!): Boolean
+	updateTutorial(_id: ID!, tutorial: TutorialInput!): Tutorial
+	updateUserEmail(email: String!): User
+	updateUserPhoto(photoId: String!): User
+	updateUserProfile(profile: ProfileInput!): User
+	upgradeSubscription: SubscriptionReturn
+	verifyAuthentication(params: AuthenticateParamsInput!, serviceName: String!): Boolean!
+	verifyEmail(authDigest: String!, email: String!): Boolean!
+	vote(seriesId: String!, userId: String!): Boolean
+}
+
+type Order {
+	_id: ID!
+	cart: [Cart]
+	createdAt: Date
+	email: String
+	items: [Playlist]
+	number: Int!
+	total: String!
+	transactionId: String!
+	user: String!
+}
+
+input OrderInput {
+	affiliateId: String
+	cart: [CartInput!]!
+	coupon: String
+	nonce: String!
+}
+
+type PastQuizResult {
+	createdAt: Date
+	questionResults: [Results]
+	quizId: ID
+	score: Float
+}
+
+type Payment {
+	nextPaymentDue: Date
+}
+
+type PaymentMethod {
+	cardType: String
+	createdAt: String
+	default: Boolean
+	expirationMonth: String
+	expirationYear: String
+	last4: String
+	token: String
+}
+
+type Plan {
+	id: ID
+	name: String
+}
+
+type PlanConfig {
+	billingName: String
+	description: String
+	id: String
+	interval: String
+	name: String
+	offerDiscountOnCancellation: Boolean
+	percentOff: Int
+	price: String
+	priceInCents: Int
+	productType: String
+}
+
+type PlaybackId {
+	id: ID
+}
+
+type Playlist {
+	_id: ID!
+	author: Author
+	authorId: String
+	bgColor: String
+	bgImageCloudId: String
+	codeLink: String
+	color: String
+	description: String
+	didBuy: Boolean
+	didViewAll: Boolean
+	downloadSeriesKey: String
+	files: String
+	filesSize: String
+	isPremium: Boolean
+	length: Int
+	level: Int
+	logo: String
+	order: Int
+	playId: String
+	price: String
+	progress: Int
+	releaseDate: String
+	salePrice: String
+	sku: String
+	slug: String!
+	status: String
+	tags: [String]
+	title: String
+	tutorials: [Tutorial]
+	views: Int
+}
+
+input PlaylistInput {
+	_id: ID
+	authorId: ID!
+	bgColor: String
+	bgImage: String
+	bgImageCloudId: String
+	codeLink: String
+	color: String
+	description: String
+	downloadSeriesKey: String
+	files: String
+	filesSize: String
+	isPremium: Boolean!
+	level: Int!
+	logo: String!
+	order: Int!
+	playId: String
+	price: String
+	releaseDate: String!
+	salePrice: String
+	sku: String!
+	slug: String
+	status: String!
+	tags: [String!]!
+	title: String!
+}
+
+enum Position {
+	CENTER
+	LEFT
+	RIGHT
+}
+
+type Post {
+	_id: ID!
+	author: Author!
+	body: String!
+	createdAt: Date!
+	excerpt: String!
+	sharingImage: String
+	slug: String!
+	status: Status!
+	tags: [String!]!
+	title: String!
+	updatedAt: Date!
+	videoId: String
+}
+
+input PostInput {
+	authorId: String!
+	body: String!
+	createdAt: Date
+	sharingImage: String
+	status: Status
+	tags: [String!]!
+	title: String!
+	updatedAt: Date
+	videoId: String
+}
+
+type PotentialSeries {
+	_id: ID!
+	complete: Boolean
+	name: String!
+	retired: Boolean
+	selected: Boolean
+	userDidVote: Boolean
+	value: Float!
+}
+
+type Profile {
+	city: String
+	country: String
+	firstName: String
+	lastName: String
+	paypalId: String
+	state: String
+	streetAddress: String
+	streetAddress2: String
+	zip: String
+}
+
+input ProfileInput {
+	city: String
+	country: String
+	firstName: String
+	lastName: String
+	state: String
+	streetAddress: String
+	streetAddress2: String
+	zip: String
+}
+
+type ProfitWell {
+	active_customers: [ProfitWellData]
+	recurring_revenue: [ProfitWellData]
+}
+
+type ProfitWellData {
+	date: String
+	value: Float
+}
+
+type Query {
+	activeTutorial(playlistSlug: String, slug: String): Tutorial
+	adminAffiliateSales(affiliateId: ID!, gt: Date, lt: Date): [AffiliateSales]
+	adminAffiliateSubscriptions(affiliateId: ID!, gt: Date, lt: Date): [AffiliateSales]
+	adminQuizResults: [QuizResult]
+	affiliateSales(gt: Date, lt: Date): [AffiliateSales]
+	affiliateSubscriptions(gt: Date, lt: Date): [AffiliateSales]
+	affiliates: [User]
+	allCourses: [Course]
+	allPosts: [Post]
+	allQuizzes: [Quiz]
+	allTutorials(filter: String = "", limit: Int = 0): [Tutorial]
+	allVotes(limit: Int, skip: Int): [Vote]
+	authorViewsAndRevenue(endDate: Date, startDate: Date!): AuthorViewsRevenueResponse!
+	authors: [User!]
+	btToken: String
+	cardBgs: [CardBg]
+	checkCoupon(name: String!, productType: String!): Coupon
+	codeStarters: [CodeStarter]
+	comingSoon: Playlist
+	comment(_id: ID!): Comment
+	comments(
+		isSortReverse: Boolean
+		limit: Int
+		offset: Int
+		playlistId: String
+		postId: String
+		tutorialId: String
+	): [Comment]
+	completedSeries: [PotentialSeries]
+	coupons: [Coupon]
+	course(id: ID, slug: String): Course
+	courses: [Course]
+	estimateSeatsChange(newNumberOfSeats: Int!, teamId: String!): SeatsChangeEstimate
+	getUpload: MUXUpload
+	getUser: User
+	getUserByEmail(email: String): User
+	latestPlaylist: Playlist
+	myPosts(authorId: ID!): [Post]
+	myQuizzes(authorId: ID!): [Quiz]
+	newUsers: [User]
+	nullSubs: [User]
+	order(_id: ID!): Order
+	orders(filter: String, gt: Date, limit: Int, lt: Date): [Order]
+	pendingPosts: [Post]
+	pendingPostsCount: Int
+	pendingQuizzes: [Quiz]
+	pendingQuizzesCount: Int
+	playlist(sku: String, slug: String): Playlist
+	playlistAdmin(_id: ID!): Playlist
+	playlistById(_id: ID!): Playlist
+	playlists(limit: Int, tags: [String!]): [Playlist]
+	playlistsAdmin(filter: String, limit: Int): [Playlist]
+	post(_id: ID, slug: String): Post
+	posts(limit: Int, offset: Int): [Post]
+	postsCount: Int
+	potentialSeries(active: Boolean, limit: Int, skip: Int): [PotentialSeries]
+	product: Playlist
+	profitWell: ProfitWell
+	quiz(_id: ID, slug: String): Quiz
+	quizResult(quizId: ID!): QuizResult
+	quizResults: [QuizResult]
+	quizzes: [Quiz]
+	retiredPotentialSeries: [PotentialSeries]
+	salesData(gt: Date, lt: Date): SalesData
+	salesVolume(gt: Date, lt: Date): [Sales]
+	selectedPotentialSeries: PotentialSeries
+	selectedPotentialSeriesList: [PotentialSeries]
+	seriesBySales: [Cart]
+	seriesByViewLogs: [Playlist]
+	singleUser(_id: ID): User
+	startedSeries: [Playlist]
+	suggestedSeries: [Playlist]
+	tags: [Tag]
+	team(id: ID!): Team
+	teams(limit: Int): [Team]
+	totalPlaylists: Int
+	tutorial(id: ID): Tutorial
+	tutorials(limit: Int = 0, playlistSlug: String): [Tutorial]
+	user: User
+	userAffiliate: Affiliate
+	userDownloads: [Playlist]
+	userOrders: [Order]
+	userOrdersAdmin(_id: ID!): [Order]
+	userPaymentMethods: [PaymentMethod]
+	userSubscription: Sub
+	userTeam(userEmail: String): Team
+	userTransaction(invoiceId: ID!): Transaction
+	userTransactions(userId: ID): [Transaction]
+	userVotes(id: String): [Vote]
+	users(filter: String, limit: Int, role: String, skip: Int): [User]
+	viewLogsInRange(endDate: Date, startDate: Date!): [ViewLog!]!
+}
+
+type Question {
+	_id: ID
+	choices: [Choice]
+	hint: String
+	order: Int
+	question: String
+}
+
+input QuestionInput {
+	_id: ID
+	choices: [ChoiceInput]
+	hint: String
+	order: Int
+	question: String
+}
+
+type Quiz {
+	_id: ID!
+	author: Author
+	authorId: String
+	bgColor: String
+	bgImage: String
+	bgImageCloudId: String
+	color: String
+	description: String
+	didComplete: Boolean
+	directions: String
+	logo: String
+	order: Int
+	questions: [Question]
+	slug: String
+	status: Status
+	title: String
+}
+
+input QuizInput {
+	_id: ID!
+	authorId: ID
+	bgColor: String
+	bgImage: String
+	bgImageCloudId: String
+	color: String
+	description: String
+	directions: String
+	logo: String
+	order: Int
+	questions: [QuestionInput]
+	slug: String
+	status: Status
+	title: String
+}
+
+type QuizResult {
+	_id: ID
+	createdAt: Date
+	isComplete: Boolean
+	pastResults: [PastQuizResult]
+	questionResults: [Results]
+	quizId: ID
+	score: Float
+	updatedAt: Date
+	userId: ID
+}
+
+input QuizResultInput {
+	questionResults: [ResultsInput]
+	quizId: ID
+	score: Float
+}
+
+input ReorderPlaylistInput {
+	_id: ID!
+}
+
+type Results {
+	isCorrect: Boolean
+	questionId: ID
+}
+
+input ResultsInput {
+	isCorrect: Boolean
+	questionId: ID
+}
+
+type RevenueData {
+	month: String
+	revenue: Int
+	sales: Int
+	subscription: Int
+	year: String
+}
+
+type RevenueYear {
+	average: Int
+	mean: Int
+	median: Int
+	revenue: Int
+}
+
+type Sales {
+	date: String
+	day: String
+	month: String
+	sales: Float
+	year: String
+}
+
+type SalesData {
+	revenueByMonth: [RevenueData!]
+	revenueForPeriod: Float
+	revenueForYear: Float
+	year: RevenueYear
+}
+
+type SeatsChangeEstimate {
+	daysRemainingInBillingPeriod: Int!
+	newNumberOfSeats: Int!
+	newPlanPricePerYear: Int!
+	nextChargeDate: Date!
+	priceQuotedPerSeat: Int!
+	proratedAmount: Int!
+	seatsDelta: Int!
+}
+
+type Settings {
+	autoPlay: Boolean
+	newsletter: String
+	playbackRate: Float
+	theme: String
+}
+
+type Social {
+	homepage: String
+	instagram: String
+	twitter: String
+	youtube: String
+}
+
+input SocialCardInput {
+	filename: String!
+	imageData: String!
+	type: String!
+}
+
+input SocialInput {
+	homepage: String
+	instagram: String
+	twitter: String
+	youtube: String
+}
+
+enum Status {
+	active
+	hidden
+	pending
+	prerelease
+	retired
+}
+
+type Steps {
+	_id: ID
+	position: Position
+	post: Post
+	quiz: Quiz
+	series: Playlist
+	type: CourseType
+}
+
+input StepsInput {
+	_id: ID
+	position: Position
+	type: CourseType
+}
+
+type Sub {
+	createdAt: Date!
+	id: ID!
+	isCancelled: Boolean!
+	isEducationalPlan: Boolean!
+	isExpiring: Boolean!
+	isPastDue: Boolean!
+	isProAnnualPlan: Boolean!
+	isProMonthlyPlan: Boolean!
+	isTeamPlan: Boolean!
+	nextChargeAmount: String!
+	nextChargeDate: Date!
+	numberOfSeats: Int!
+	planConfig: PlanConfig!
+	status: SubscriptionStatus!
+}
+
+type SubscriptionReturn {
+	message: String
+	success: Boolean!
+}
+
+enum SubscriptionStatus {
+	ACTIVE
+	CANCELED
+	EXPIRED
+	PASTDUE
+	PENDING
+}
+
+enum SubscriptionType {
+	BRAINTREE
+	STRIPE
+}
+
+type Subscriptions {
+	id: String!
+	monthlySubs: Int
+	newSubs: Int
+	yearlySubs: Int
+}
+
+input SubscriptionsInput {
+	affiliateId: String
+	couponName: String
+	nonce: String!
+	plan: SubscriptionsPlanInput!
+	productType: String!
+}
+
+input SubscriptionsPlanInput {
+	_id: String!
+	isTeamPlan: Boolean
+	numberOfSeats: Int
+	price: String!
+	teamName: String
+}
+
+type Tag {
+	_id: ID!
+	name: String!
+}
+
+input TagInput {
+	_id: ID!
+	name: String!
+}
+
+type Team {
+	_id: ID!
+	accountOwner: User!
+	members: [TeamMember!]!
+	name: String!
+	numberOfSeats: Int!
+	priceQuotedPerSeat: Int!
+}
+
+input TeamInput {
+	accountOwnerUserId: String!
+	name: String!
+	numberOfSeats: Int!
+	priceQuotedPerSeat: Int!
+}
+
+type TeamMember {
+	addedAt: Date
+	email: String!
+	isSeatClaimed: Boolean!
+	isTeamAdmin: Boolean!
+	lastClaimSeatEmailSentAt: Date
+	seatClaimedAt: Date
+	team: Team
+	user: User
+}
+
+input TeamMemberInput {
+	email: String!
+	isTeamAdmin: Boolean
+	teamId: String!
+}
+
+type Tokens {
+	accessToken: String
+	refreshToken: String
+}
+
+type TotalViewsSummary {
+	revenue: Int!
+	views: Int!
+}
+
+type Transaction {
+	amount: String
+	createdAt: String
+	creditCard: PaymentMethod
+	currencyIsoCode: String
+	id: ID
+	orderId: String
+	planId: String
+	refundedTransactionId: String
+	status: String
+	subscriptionId: String
+	type: String
+	updatedAt: String
+}
+
+type Tutorial {
+	_id: ID!
+	asset: MUXAsset
+	codeStarter: CodeStarter
+	description: String
+	didView: Boolean
+	displayOrder: String
+	duration: String
+	endCode: String
+	isMux: Boolean
+	listSlug: String
+	nextSlug: String
+	order: Float
+	playback: MUXPlayback
+	playlist: Playlist
+	playlistId: String
+	playlistName: String
+	playlistSlug: String
+	slug: String
+	startCode: String
+	title: String
+	tutId: String
+	upload: MUXUpload
+	visibility: Visibility
+}
+
+input TutorialInput {
+	_id: String
+	codeStarter: CodeStarterInput
+	description: String
+	endCode: String
+	listSlug: String
+	order: Float
+	playlistName: String
+	startCode: String
+	title: String
+	visibility: Visibility
+}
+
+type UpdateTeamResult {
+	error: String
+	success: Boolean!
+}
+
+type User {
+	_id: ID
+	affiliate: Affiliate
+	ccFail: Int
+	createdAt: Date
+	customer: Customer
+	customerId: String
+	email: String
+	emails: [EmailRecord!]
+	id: ID
+	interests: [String]
+	isAdmin: Boolean!
+	isAffiliate: Boolean!
+	isAuthor: Boolean!
+	isBanned: Boolean!
+	isBeta: Boolean!
+	isEditor: Boolean!
+	isMasqueradeSession: Boolean
+	isPro: Boolean!
+	isProTeamAccountOwner: Boolean!
+	isProTeamMember: Boolean!
+	isStripe: Boolean!
+	isSuper: Boolean
+	paypalEmail: String
+	photoId: String
+	profile: Profile!
+	roles: [String]!
+	settings: Settings!
+	social: Social!
+	subscriptionId: ID
+	subscriptionType: SubscriptionType
+	username: String
+	votes: [Vote]
+}
+
+input UserInput {
+	email: String
+	id: ID
+	username: String
+}
+
+type ViewLog {
+	_id: ID
+	contentAuthorId: ID
+	contentId: ID
+	isProView: Boolean
+	userId: ID
+}
+
+enum Visibility {
+	hidden
+	public
+	unlisted
+}
+
+type Vote {
+	_id: String
+	series: PotentialSeries
+	seriesId: String
+	userId: String
+}
