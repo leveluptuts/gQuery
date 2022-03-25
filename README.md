@@ -1,5 +1,6 @@
 ![gQuery](./gQuery.png)
 
-### Docs
+
+# gQuery
 
 https://gquery.leveluptutorials.com/
