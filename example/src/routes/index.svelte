@@ -1,5 +1,4 @@
 <script context="module" lang="ts">
-	export const prerender = true;
 	import DevTools from '$lib/DevTools.svelte';
 	import { getLatestSeries, latestSeries } from '$lib/listing/Series.gq';
 

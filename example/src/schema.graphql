@@ -55,7 +55,6 @@ type AuthorProfile {
 }
 
 type AuthorSocial {
-	facebook: String
 	homepage: String
 	instagram: String
 	twitter: String
