@@ -27,6 +27,7 @@ export const plugin = (schema, documents, config) => {
     const defaultTypes = `
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
+    fetch?: typeof fetch;
 }
 
 interface CacheFunctionOptions {
@@ -66,7 +67,7 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
                 // This is where the mutation code is generated
                 // We're grabbing the mutation name and using it as a string in the generated code
                 operations += `
-export const ${name} = ({ variables }: SubscribeWrapperArgs<${opv}>):
+export const ${name} = ({ variables, fetch = window?.fetch }: SubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
 	g.fetch<${op}>({
 		queries: [{ query: ${pascalName}Doc, variables }],

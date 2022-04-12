@@ -296,7 +296,8 @@ export async function getAdminTags(
 }
 
 export const deleteTag = ({
-	variables
+	variables,
+	fetch = window?.fetch
 }: SubscribeWrapperArgs<DeleteTagMutationVariables>): Promise<
 	GFetchReturnWithErrors<DeleteTagMutation>
 > =>
