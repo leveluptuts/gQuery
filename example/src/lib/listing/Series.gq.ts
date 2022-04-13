@@ -18,6 +18,7 @@ type FetchWrapperArgs<T> = {
 
 type SubscribeWrapperArgs<T> = {
 	variables?: T,
+	fetch?: typeof fetch,
 }
 
 interface CacheFunctionOptions {
