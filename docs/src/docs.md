@@ -11,6 +11,7 @@ npm install --save @leveluptuts/g-query graphql-tag
 ### 1. Initialize G
 
 ```javascript
+import { GFetch } from '@leveluptuts/g-query'
 // src/lib/config/g.ts
 
 export const g = new GFetch({
