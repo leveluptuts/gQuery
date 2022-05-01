@@ -11,6 +11,7 @@ npm install --save @leveluptuts/g-query graphql-tag
 ### 1. Initialize G
 
 ```javascript
+import { GFetch } from '@leveluptuts/g-query'
 // src/lib/config/g.ts
 
 export const g = new GFetch({
@@ -36,7 +37,7 @@ vite: {
 			// schema: 'http://localhost:3001/graphql' // this can also be a url to a graphql api
 			schema: './src/lib/graphql/schema.graphql', // path to schema, schema is required
 			out: './src/lib/graphql', // Where you want the general schema types to output
-			gPath: '$lib/config/g' // Path to g, created in step 1.
+			gPath: '$lib/config/g', // Path to g, created in step 1.
 			// Optional
 			debug: false  // boolean, this adds logging for gq files deleted and on codegen
 		})
