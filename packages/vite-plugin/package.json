@@ -1,0 +1,19 @@
+{
+	"author": "",
+	"description": "The Vite plugin for gQuery",
+	"devDependencies": {
+		"@graphql-codegen/cli": "^2.3.0",
+		"execa": "^6.0.0",
+		"typescript": "^4.7.2",
+		"vite": "^2.9.12"
+	},
+	"license": "ISC",
+	"main": "index.js",
+	"name": "@leveluptuts/g-query-vite-plugin",
+	"scripts": {
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"type": "module",
+	"version": "1.0.0"
+}
