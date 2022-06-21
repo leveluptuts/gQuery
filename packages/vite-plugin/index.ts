@@ -1,5 +1,6 @@
 // This is the vite plugin that runs the codegen
 import type { Plugin } from 'vite';
+import type { Types } from '@graphql-codegen/plugin-helpers';
 import { generate } from '@graphql-codegen/cli';
 import { execaCommand } from 'execa';
 
@@ -17,8 +18,15 @@ async function cleanGQ({ debug = false }) {
 	});
 }
 
+export interface gQueryOptions {
+	schema: Types.Schema;
+	out: string;
+	gPath: string;
+	debug?: boolean;
+}
+
 // Runs graphql codegen
-async function gQueryGenerate({ schema, out, gPath, debug = false }) {
+async function gQueryGenerate({ schema, out, gPath, debug = false }: gQueryOptions) {
 	debug && console.log('🤖 starting codegen');
 
 	// the actual codegen process.

@@ -1,60 +1,62 @@
 {
-	"author": "Scott Tolinski",
-	"bugs": {
-		"url": "https://github.com/leveluptuts/gQuery/issues"
-	},
-	"dependencies": {
-		"graphql": "^16.2.0",
-		"isomorphic-fetch": "^3.0.0",
-		"just-pascal-case": "^3.0.1",
-		"pascal-case": "^3.1.2"
-	},
-	"description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
-	"devDependencies": {
-		"@graphql-codegen/cli": "^2.3.0",
-		"@graphql-codegen/import-types-preset": "^2.1.8",
-		"@graphql-codegen/near-operation-file-preset": "^2.2.2",
-		"@graphql-codegen/plugin-helpers": "^2.3.1",
-		"@graphql-codegen/typescript-operations": "^2.2.1",
-		"@graphql-codegen/visitor-plugin-common": "^2.5.1",
-		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "next",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
-		"@typescript-eslint/parser": "^5.27.0",
-		"camel-case": "^4.1.2",
-		"eslint": "^8.16.0",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-svelte3": "^4.0.0",
-		"prettier": "^2.6.2",
-		"prettier-plugin-svelte": "^2.7.0",
-		"svelte": "^3.44.0",
-		"svelte-check": "^2.7.1",
-		"svelte-preprocess": "^4.10.6",
-		"svelte2tsx": "^0.5.10",
-		"tslib": "^2.3.1",
-		"typescript": "^4.7.2"
-	},
-	"homepage": "https://github.com/leveluptuts/gQuery#readme",
-	"keywords": [
-		"graphql"
-	],
-	"license": "ISC",
-	"name": "@leveluptuts/g-query",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/leveluptuts/gQuery.git"
-	},
-	"scripts": {
-		"build": "svelte-kit build",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-		"dev": "svelte-kit dev",
-		"format": "prettier --write --plugin-search-dir=. .",
-		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
-		"package": "svelte-kit package",
-		"prepare": "svelte-kit sync",
-		"preview": "svelte-kit preview"
-	},
-	"type": "module",
-	"version": "0.5.0"
+    "author": "Scott Tolinski",
+    "bugs": {
+        "url": "https://github.com/leveluptuts/gQuery/issues"
+    },
+    "dependencies": {
+        "graphql": "^16.2.0",
+        "isomorphic-fetch": "^3.0.0",
+        "just-pascal-case": "^3.0.1",
+        "pascal-case": "^3.1.2"
+    },
+    "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
+    "devDependencies": {
+        "@graphql-codegen/cli": "^2.3.0",
+        "@graphql-codegen/import-types-preset": "^2.1.8",
+        "@graphql-codegen/near-operation-file-preset": "^2.2.2",
+        "@graphql-codegen/plugin-helpers": "^2.3.1",
+        "@graphql-codegen/typescript-operations": "^2.2.1",
+        "@graphql-codegen/visitor-plugin-common": "^2.5.1",
+        "@leveluptuts/g-query-codegen": "workspace:^1.0.0",
+        "@leveluptuts/g-query-vite-plugin": "workspace:^1.0.0",
+        "@sveltejs/adapter-auto": "next",
+        "@sveltejs/kit": "next",
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "camel-case": "^4.1.2",
+        "eslint": "^8.16.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-svelte3": "^4.0.0",
+        "prettier": "^2.6.2",
+        "prettier-plugin-svelte": "^2.7.0",
+        "svelte": "^3.44.0",
+        "svelte-check": "^2.7.1",
+        "svelte-preprocess": "^4.10.6",
+        "svelte2tsx": "^0.5.10",
+        "tslib": "^2.3.1",
+        "typescript": "^4.7.2"
+    },
+    "homepage": "https://github.com/leveluptuts/gQuery#readme",
+    "keywords": [
+        "graphql"
+    ],
+    "license": "ISC",
+    "name": "@leveluptuts/g-query",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/leveluptuts/gQuery.git"
+    },
+    "scripts": {
+        "build": "svelte-kit build",
+        "check": "svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+        "dev": "svelte-kit dev",
+        "format": "prettier --write --plugin-search-dir=. .",
+        "lint": "prettier --check --plugin-search-dir=. . && eslint .",
+        "package": "svelte-kit package",
+        "prepare": "svelte-kit sync",
+        "preview": "svelte-kit preview"
+    },
+    "type": "module",
+    "version": "0.5.0"
 }
