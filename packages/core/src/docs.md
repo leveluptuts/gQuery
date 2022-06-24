@@ -290,7 +290,7 @@ export async function getAdminTags(
 	await adminTags.set({
 		...data,
 		errors: data?.errors,
-		gQueryStatus: 'LOADED'
+		status: 'LOADED'
 	});
 	return data;
 }
@@ -334,3 +334,7 @@ import { user, someMutation } from './UserQueries.gq';
 
 await someMutation({ variables, store: user });
 ```
+
+### Q? How is this different than X, Y, Z library?
+
+We're dogfooding / using this lib to build LevelUpTutorials.com. It's not intended to be perfect for every usecase, but effortless for ones like Level Up. There are similar libraries that have taken inspiration from gQuery, but only on gQuery. Check out our API and if it looks nice to you, give it a try. We plan on keeping this thing lightweight and effortless. Often imitated, never duplicated. Stay fresh.

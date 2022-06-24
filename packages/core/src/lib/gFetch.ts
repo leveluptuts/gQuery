@@ -1,5 +1,6 @@
 import type { DefinitionNode, DocumentNode } from 'graphql';
 import { print } from 'graphql';
+import fetch from 'isomorphic-fetch';
 
 // What's the deal with *gFetch*?
 // gFetch is a 0 dependency fetcher for graphql that accepts a custom fetch function
@@ -8,7 +9,6 @@ import { print } from 'graphql';
 
 // Two key exports from this file
 // gFetch -> a fetcher that returns async
-// ogFetch -> a fetcher that returns a subscription
 
 // * Main Features *
 //  1. 0 deps outside of graphql and svelte kit
@@ -17,8 +17,17 @@ import { print } from 'graphql';
 //  4. Doesn't use it's own cache, ie, would rely on Svelte's stores
 export declare type GFetchQueryDefault = {
 	errors?: Error[];
-	gQueryStatus: 'LOADED' | 'LOADING' | 'ERROR';
+	status: 'INITIAL' | 'LOADED' | 'LOADING' | 'ERROR';
 };
+
+export interface GSubscribeWrapperArgs<T> {
+	variables?: T;
+}
+
+export interface GCacheFunctionOptions {
+	update?: boolean;
+	fresh?: boolean;
+}
 
 type OptionalPropertyNames<T> = {
 	[K in keyof T]-?: {} extends { [P in K]: T[K] } ? K : never;
@@ -46,8 +55,9 @@ export declare type GFetchQueries = {
 	variables?: Record<string, unknown>;
 };
 
+// Turns graphql document into a string
 export const stringifyDocument = (node: string | DefinitionNode | DocumentNode): string => {
-	let str = (typeof node !== 'string' ? print(node) : node)
+	const str = (typeof node !== 'string' ? print(node) : node)
 		.replace(/([\s,]|#[^\n\r]+)+/g, ' ')
 		.trim();
 	return str;
@@ -58,13 +68,13 @@ type gFetchProperties = {
 	fetch: typeof fetch;
 };
 
-interface fetchOptions {
+interface FetchOptions {
 	credentials: 'include' | 'omit' | 'same-origin';
 }
 
 export type GClientOptions = {
 	path: string;
-	fetchOptions?: fetchOptions | {};
+	fetchOptions?: FetchOptions;
 };
 
 export type GGetParameters<Variables> = {
@@ -76,11 +86,11 @@ export type GFetchReturnWithErrors<T> = Spread<[T, GFetchQueryDefault]>;
 
 export class GFetch extends Object {
 	public path: string;
-	public fetchOptions?: fetchOptions;
+	public fetchOptions?: FetchOptions;
 
 	constructor(options: GClientOptions) {
 		super();
-		const { path, fetchOptions = {} } = options;
+		const { path, fetchOptions } = options;
 		this.path = path;
 		this.fetchOptions = fetchOptions;
 		this.fetch = this.fetch.bind(this);
@@ -88,25 +98,31 @@ export class GFetch extends Object {
 
 	// * gFetch
 	// This is a fetcher that returns a promise that resolves to a graphql response
-	public async fetch<T>({ queries, fetch }: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
-		// let document: DocumentNode = addTypenameToDocument(queries[0].query);
-
-		let documentString: string = stringifyDocument(queries[0].query);
-		const newQueries = {
+	public async fetch<T>({
+		queries,
+		fetch: sk_fetch
+	}: gFetchProperties): Promise<GFetchReturnWithErrors<T>> {
+		const document_string: string = stringifyDocument(queries[0].query);
+		const new_queries = {
 			...queries[0],
-			query: documentString
+			query: document_string
 		};
+		const body = JSON.stringify(new_queries);
+		const headers = { 'Content-Type': 'application/json' };
 
 		let data;
+		// if fetch is defined via SK app fetch use SK App Fetch
+		// Otherwise use isomorphic fetch
+		const local_fetch = sk_fetch ? sk_fetch : fetch;
 
 		// This is generic fetch, that is polyfilled via svelte kit
 		// graph ql fetches must be POST
 		// credentials include for user ssr data
 		try {
-			const res = await fetch(this.path, {
+			const res = await local_fetch(this.path, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(newQueries),
+				headers,
+				body,
 				...this.fetchOptions
 			});
 			// Gets the data back from the server
@@ -117,12 +133,25 @@ export class GFetch extends Object {
 				errors: data.errors
 			};
 		} catch (err) {
-			console.error('err', err);
+			console.error('❓ gFetch Error - ', err);
 			return {
 				...data,
-				gQueryStatus: 'ERROR',
+				status: 'ERROR',
 				errors: [err] as Error[]
 			};
 		}
 	}
 }
+
+// Get fresh data without caching
+// Get fresh data with caching
+// Get cached data
+
+// getFrom, cache, fresh
+// update? boolean
+
+// Most of time, get stale data
+// Get fresh data if requested
+
+// TODO
+// By default store in local storage

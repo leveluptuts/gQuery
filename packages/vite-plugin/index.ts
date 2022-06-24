@@ -44,6 +44,7 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }: gQueryOptio
 					config: {
 						useTypeImports: true,
 						gPath,
+						debug,
 						importDocumentNodeExternallyFrom: 'near-operation-file',
 						inlineFragmentTypes: 'combine'
 					},
@@ -64,41 +65,39 @@ async function gQueryGenerate({ schema, out, gPath, debug = false }: gQueryOptio
 	);
 }
 
-export function gQueryCodegen({ schema, out, gPath, debug = false }): Plugin {
+export function gQueryCodegen({ schema, out, gPath, debug = false }: gQueryOptions): Plugin {
 	if (!schema) {
 		throw new Error('No schema provided');
 	}
 	if (!out) {
-		throw new Error('No output directory specified for types.');
+		throw new Error(
+			'No output directory specified for types. Please specify "out" property in generator plugin.'
+		);
 	}
 	if (!gPath) {
 		throw new Error(
-			"No gPath directory specified. gPath is where you've initialized the 'g' client"
+			"No gPath directory specified. gPath is where you've initialized the 'g' client. See gquery.leveluptutorials.com"
 		);
 	}
 
 	return {
 		name: 'g-query-codegen',
 		async buildStart() {
-			console.log('build start');
+			// This runs on the initial run of gQuery
+			console.log('🤖 gQuery Generation Start');
 			try {
+				// Remove all generated files
 				await cleanGQ({ debug });
+				// Generate new files
 				await gQueryGenerate({ schema, out, gPath, debug });
 
 				return;
 			} catch (e) {
-				//   TODO - These errors aren't good enough
 				console.log(
-					'❓ gFetch Error - Something Happened - Here is the error and some things to consider.',
+					'❓ gQuery Error - Something Happened - Here is the error and some things to consider.',
 					e
 				);
-				console.log('❓ gFetch Error - Make sure `.graphql` are files found.');
-				console.log(
-					'❓ gFetch Warning - If you would like the gQuery generator to work (we reccomend you do).'
-				);
-				console.log(
-					'❓ gFetch Warning - If you would like to add them, you will need to restart SvelteKit.'
-				);
+				console.log('❓ gQuery Error - Make sure `.graphql` are files exist.');
 			}
 			return;
 		},
@@ -107,13 +106,16 @@ export function gQueryCodegen({ schema, out, gPath, debug = false }): Plugin {
 			const listener = async (absolutePath = '') => {
 				if (!filterExt.test(absolutePath)) return null;
 				try {
+					// Remove all generated files
 					await cleanGQ({ debug });
-					await gQueryGenerate({ schema, out, gPath });
+					// Generate new files
+					await gQueryGenerate({ schema, out, gPath, debug });
 				} catch (error) {
-					console.log('Something went wrong. Please save the file again.');
+					console.log('❓ gQuery Error - Something went wrong. Please save the file again.');
 				}
 			};
 
+			// Run generation on file change or add
 			server.watcher.on('add', listener);
 			server.watcher.on('change', listener);
 		}
