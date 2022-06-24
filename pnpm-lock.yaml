@@ -1,0 +1,32 @@
+lockfileVersion: 5.3
+
+importers:
+
+  .:
+    specifiers: {}
+
+  packages/core:
+    specifiers:
+      '@leveluptuts/g-query-codegen': workspace:^1.0.0
+      '@leveluptuts/g-query-vite-plugin': workspace:^1.0.0
+      marked: ^4.0.17
+      prismjs: ^1.28.0
+    dependencies:
+      marked: 4.0.17
+      prismjs: 1.28.0
+    devDependencies:
+      '@leveluptuts/g-query-codegen': link:../codegen
+      '@leveluptuts/g-query-vite-plugin': link:../vite-plugin
+
+packages:
+
+  /marked/4.0.17:
+    resolution: {integrity: sha512-Wfk0ATOK5iPxM4ptrORkFemqroz0ZDxp5MWfYA7H/F+wO17NRWV5Ypxi6p3g2Xmw2bKeiYOl6oVnLHKxBA0VhA==}
+    engines: {node: '>= 12'}
+    hasBin: true
+    dev: false
+
+  /prismjs/1.28.0:
+    resolution: {integrity: sha512-8aaXdYvl1F7iC7Xm1spqSaY/OJBpYW3v+KJ+F17iYxvdc8sfjW194COK5wVhMZX45tGteiBQgdvD/nhxcRwylw==}
+    engines: {node: '>=6'}
+    dev: false
