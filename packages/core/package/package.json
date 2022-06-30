@@ -4,7 +4,6 @@
     "url": "https://github.com/leveluptuts/gQuery/issues"
   },
   "dependencies": {
-    "graphql": "^16.2.0",
     "isomorphic-fetch": "^3.0.0",
     "just-pascal-case": "^3.0.1",
     "pascal-case": "^3.1.2"
@@ -17,6 +16,8 @@
     "@graphql-codegen/plugin-helpers": "^2.3.1",
     "@graphql-codegen/typescript-operations": "^2.2.1",
     "@graphql-codegen/visitor-plugin-common": "^2.5.1",
+    "@leveluptuts/g-query-codegen": "workspace:^1.0.0",
+    "@leveluptuts/g-query-vite-plugin": "workspace:^1.0.0",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
@@ -25,8 +26,10 @@
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^4.0.0",
+    "marked": "^4.0.17",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.7.0",
+    "prismjs": "^1.28.0",
     "svelte": "^3.44.0",
     "svelte-check": "^2.7.1",
     "svelte-preprocess": "^4.10.6",
@@ -40,6 +43,9 @@
   ],
   "license": "ISC",
   "name": "@leveluptuts/g-query",
+  "peerDependencies": {
+    "graphql": "^16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leveluptuts/gQuery.git"
@@ -52,6 +58,7 @@
     "./gFetch": "./gFetch.js",
     "./getStores": "./getStores.js",
     ".": "./index.js",
+    "./local": "./local.js",
     "./utils/format": "./utils/format.js"
   }
 }

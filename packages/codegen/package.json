@@ -3,15 +3,22 @@
 	"dependencies": {
 		"@graphql-codegen/plugin-helpers": "^2.3.1",
 		"@graphql-codegen/visitor-plugin-common": "^2.5.1",
-		"graphql": "^16.2.0",
 		"just-pascal-case": "^3.0.1"
 	},
 	"description": "",
+	"devDependencies": {
+		"esbuild": "^0.14.47",
+		"typescript": "^4.7.4"
+	},
 	"license": "ISC",
 	"main": "index.js",
 	"name": "@leveluptuts/g-query-codegen",
+	"peerDependencies": {
+		"graphql": "^16.0.0"
+	},
 	"scripts": {
-		"build": "tsc",
+		"build": "esbuild index.ts --platform=node --bundle --format=esm --outfile=index.js",
+		"check": "tsc --no-emit",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"type": "module",

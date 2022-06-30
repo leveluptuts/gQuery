@@ -27,6 +27,7 @@ export interface GSubscribeWrapperArgs<T> {
 export interface GCacheFunctionOptions {
 	update?: boolean;
 	fresh?: boolean;
+	localStorage?: boolean;
 }
 
 type OptionalPropertyNames<T> = {
@@ -108,6 +109,8 @@ export class GFetch extends Object {
 			query: document_string
 		};
 		const body = JSON.stringify(new_queries);
+
+		// Todo -> need a way to inject custom headers
 		const headers = { 'Content-Type': 'application/json' };
 
 		let data;

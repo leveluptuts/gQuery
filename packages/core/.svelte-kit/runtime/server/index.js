@@ -77,13 +77,13 @@ function is_pojo(body) {
 
 	if (body) {
 		if (body instanceof Uint8Array) return false;
+		if (body instanceof ReadableStream) return false;
 
-		// body could be a node Readable, but we don't want to import
-		// node built-ins, so we use duck typing
-		if (body._readableState && typeof body.pipe === 'function') return false;
-
-		// similarly, it could be a web ReadableStream
-		if (typeof ReadableStream !== 'undefined' && body instanceof ReadableStream) return false;
+		// if body is a node Readable, throw an error
+		// TODO remove this for 1.0
+		if (body._readableState && typeof body.pipe === 'function') {
+			throw new Error('Node streams are no longer supported — use a ReadableStream instead');
+		}
 	}
 
 	return true;
@@ -113,6 +113,8 @@ const text_types = new Set([
 	'application/x-www-form-urlencoded',
 	'multipart/form-data'
 ]);
+
+const bodyless_status_codes = new Set([101, 204, 205, 304]);
 
 /**
  * Decides how the body should be parsed based on its mime type
@@ -217,10 +219,13 @@ async function render_endpoint(event, mod) {
 		}
 	}
 
-	return new Response(method !== 'head' ? normalized_body : undefined, {
-		status,
-		headers
-	});
+	return new Response(
+		method !== 'head' && !bodyless_status_codes.has(status) ? normalized_body : undefined,
+		{
+			status,
+			headers
+		}
+	);
 }
 
 var chars$1 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$';
@@ -629,18 +634,6 @@ function escape_html_attr(str) {
 }
 
 const s = JSON.stringify;
-
-/** @param {URL} url */
-function create_prerendering_url_proxy(url) {
-	return new Proxy(url, {
-		get: (target, prop, receiver) => {
-			if (prop === 'search' || prop === 'searchParams') {
-				throw new Error(`Cannot access url.${prop} on a page with prerendering enabled`);
-			}
-			return Reflect.get(target, prop, receiver);
-		}
-	});
-}
 
 const encoder = new TextEncoder();
 
@@ -1069,6 +1062,82 @@ class Csp {
 	}
 }
 
+const absolute = /^([a-z]+:)?\/?\//;
+const scheme = /^[a-z]+:/;
+
+/**
+ * @param {string} base
+ * @param {string} path
+ */
+function resolve(base, path) {
+	if (scheme.test(path)) return path;
+
+	const base_match = absolute.exec(base);
+	const path_match = absolute.exec(path);
+
+	if (!base_match) {
+		throw new Error(`bad base path: "${base}"`);
+	}
+
+	const baseparts = path_match ? [] : base.slice(base_match[0].length).split('/');
+	const pathparts = path_match ? path.slice(path_match[0].length).split('/') : path.split('/');
+
+	baseparts.pop();
+
+	for (let i = 0; i < pathparts.length; i += 1) {
+		const part = pathparts[i];
+		if (part === '.') continue;
+		else if (part === '..') baseparts.pop();
+		else baseparts.push(part);
+	}
+
+	const prefix = (path_match && path_match[0]) || (base_match && base_match[0]) || '';
+
+	return `${prefix}${baseparts.join('/')}`;
+}
+
+/** @param {string} path */
+function is_root_relative(path) {
+	return path[0] === '/' && path[1] !== '/';
+}
+
+/**
+ * @param {string} path
+ * @param {import('types').TrailingSlash} trailing_slash
+ */
+function normalize_path(path, trailing_slash) {
+	if (path === '/' || trailing_slash === 'ignore') return path;
+
+	if (trailing_slash === 'never') {
+		return path.endsWith('/') ? path.slice(0, -1) : path;
+	} else if (trailing_slash === 'always' && !path.endsWith('/')) {
+		return path + '/';
+	}
+
+	return path;
+}
+
+class LoadURL extends URL {
+	/** @returns {string} */
+	get hash() {
+		throw new Error(
+			'url.hash is inaccessible from load. Consider accessing hash from the page store within the script tag of your component.'
+		);
+	}
+}
+
+class PrerenderingURL extends URL {
+	/** @returns {string} */
+	get search() {
+		throw new Error('Cannot access url.search on a page with prerendering enabled');
+	}
+
+	/** @returns {URLSearchParams} */
+	get searchParams() {
+		throw new Error('Cannot access url.searchParams on a page with prerendering enabled');
+	}
+}
+
 // TODO rename this function/module
 
 const updated = {
@@ -1171,7 +1240,7 @@ async function render_response({
 				routeId: event.routeId,
 				status,
 				stuff,
-				url: state.prerendering ? create_prerendering_url_proxy(event.url) : event.url
+				url: state.prerendering ? new PrerenderingURL(event.url) : event.url
 			},
 			components: branch.map(({ node }) => node.module.default)
 		};
@@ -1946,61 +2015,6 @@ function normalize(loaded) {
 	return /** @type {import('types').NormalizedLoadOutput} */ (loaded);
 }
 
-const absolute = /^([a-z]+:)?\/?\//;
-const scheme = /^[a-z]+:/;
-
-/**
- * @param {string} base
- * @param {string} path
- */
-function resolve(base, path) {
-	if (scheme.test(path)) return path;
-
-	const base_match = absolute.exec(base);
-	const path_match = absolute.exec(path);
-
-	if (!base_match) {
-		throw new Error(`bad base path: "${base}"`);
-	}
-
-	const baseparts = path_match ? [] : base.slice(base_match[0].length).split('/');
-	const pathparts = path_match ? path.slice(path_match[0].length).split('/') : path.split('/');
-
-	baseparts.pop();
-
-	for (let i = 0; i < pathparts.length; i += 1) {
-		const part = pathparts[i];
-		if (part === '.') continue;
-		else if (part === '..') baseparts.pop();
-		else baseparts.push(part);
-	}
-
-	const prefix = (path_match && path_match[0]) || (base_match && base_match[0]) || '';
-
-	return `${prefix}${baseparts.join('/')}`;
-}
-
-/** @param {string} path */
-function is_root_relative(path) {
-	return path[0] === '/' && path[1] !== '/';
-}
-
-/**
- * @param {string} path
- * @param {import('types').TrailingSlash} trailing_slash
- */
-function normalize_path(path, trailing_slash) {
-	if (path === '/' || trailing_slash === 'ignore') return path;
-
-	if (trailing_slash === 'never') {
-		return path.endsWith('/') ? path.slice(0, -1) : path;
-	} else if (trailing_slash === 'always' && !path.endsWith('/')) {
-		return path + '/';
-	}
-
-	return path;
-}
-
 /**
  * @param {string} hostname
  * @param {string} [constraint]
@@ -2103,7 +2117,7 @@ async function load_node({
 	} else if (module.load) {
 		/** @type {import('types').LoadEvent} */
 		const load_input = {
-			url: state.prerendering ? create_prerendering_url_proxy(event.url) : event.url,
+			url: state.prerendering ? new PrerenderingURL(event.url) : new LoadURL(event.url),
 			params: event.params,
 			props: shadow.body || {},
 			routeId: event.routeId,
@@ -2269,6 +2283,11 @@ async function load_node({
 						const cookie = event.request.headers.get('cookie');
 						if (cookie) opts.headers.set('cookie', cookie);
 					}
+
+					// we need to delete the connection header, as explained here:
+					// https://github.com/nodejs/undici/issues/1470#issuecomment-1140798467
+					// TODO this may be a case for being selective about which headers we let through
+					opts.headers.delete('connection');
 
 					const external_request = new Request(requested, /** @type {RequestInit} */ (opts));
 					response = await options.hooks.externalFetch.call(null, external_request);
@@ -3078,7 +3097,12 @@ async function respond(request, options, state) {
 		}
 	}
 
-	let decoded = decodeURI(url.pathname);
+	let decoded;
+	try {
+		decoded = decodeURI(url.pathname);
+	} catch {
+		return new Response('Malformed URI', { status: 400 });
+	}
 
 	/** @type {import('types').SSRRoute | null} */
 	let route = null;
@@ -3088,7 +3112,7 @@ async function respond(request, options, state) {
 
 	if (options.paths.base && !state.prerendering?.fallback) {
 		if (!decoded.startsWith(options.paths.base)) {
-			return new Response(undefined, { status: 404 });
+			return new Response('Not found', { status: 404 });
 		}
 		decoded = decoded.slice(options.paths.base.length) || '/';
 	}
