@@ -20,6 +20,7 @@
 		"@leveluptuts/g-query-codegen": "workspace:^1.0.0",
 		"@leveluptuts/g-query-vite-plugin": "workspace:^1.0.0",
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-static": "^1.0.0-next.34",
 		"@sveltejs/kit": "next",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",

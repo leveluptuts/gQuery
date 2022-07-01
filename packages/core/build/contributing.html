@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="content-security-policy" content="">
+	<link rel="stylesheet" href="/_app/immutable/assets/pages/__layout.svelte-8a32e475.css">
+	<link rel="modulepreload" href="/_app/immutable/start-3b060844.js">
+	<link rel="modulepreload" href="/_app/immutable/chunks/index-824779f0.js">
+	<link rel="modulepreload" href="/_app/immutable/pages/__layout.svelte-3d85073d.js">
+	<link rel="modulepreload" href="/_app/immutable/pages/contributing.svelte-abe7f363.js">
+	<link rel="modulepreload" href="/_app/immutable/chunks/prism-5a0c904a.js">
+	</head>
+	<body>
+		<div>
+
+
+<main class="svelte-1k2207m"><aside class="svelte-1k2207m"><h1 class="svelte-1k2207m">gQuery</h1>
+		<a href="https://github.com/leveluptuts/gQuery" target="_blank"><svg viewBox="0 0 24 24" class="svelte-bpn430 svelte-1k2207m" style="width: 40px;"><path fill="white" stroke="white" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a>
+		<nav class="svelte-1k2207m"><h5>Docs</h5>
+			<a href="/#how-to-use" class="svelte-1k2207m">How To Use</a>
+			<a href="/#examples" class="svelte-1k2207m">Examples</a>
+			<a href="/#dev-tools" class="svelte-1k2207m">Dev Tools</a>
+			<a href="/#codegen-in-depth" class="svelte-1k2207m">Codegen In Depth</a>
+			<a href="/contributing" class="svelte-1k2207m">Contributing</a>
+
+			<h5>Links</h5>
+			<a href="https://github.com/leveluptuts/gQuery/tree/main/example" target="_blank" class="svelte-1k2207m">Example Repo</a>
+			<a href="https://leveluptutorials.com/" target="_blank" class="svelte-1k2207m">Level Up Tutorials</a></nav></aside>
+	<section class="svelte-1k2207m"><div class="markdown-render"><!-- HTML_TAG_START --><h1 id="contributing">Contributing</h1>
+<p><a href="https://github.com/leveluptuts/gQuery">https://github.com/leveluptuts/gQuery</a></p>
+<h3 id="about-this-repo">About This Repo</h3>
+<p>This repo is in three major parts.</p>
+<ul>
+<li>ViteJS Plugin - ./codegen/plugin.ts</li>
+<li>GraphQL Codegen Plugin - ./codegen/codegen.ts</li>
+<li>gFetch - Class for fetching - ./src/index.ts</li>
+</ul>
+<h4 id="vitejs-plugin">ViteJS Plugin</h4>
+<p>Tells graphQL codegen to generate and how to clean old .gq files.</p>
+<h4 id="graphql-codegen-plugin">GraphQL Codegen Plugin</h4>
+<p>Determines what is generated in .gq files</p>
+<h4 id="gfetch">gFetch</h4>
+<p>Is a simple fetch call that accepts GraphQL documents. This is just a fetch call, with some structure to the output.</p>
+<hr>
+<h3 id="how-to-work-on">How to work on</h3>
+<p>Create a branch and submit a PR for any changes. We&#39;re open to lots of ideas and extra hands on the code. If there is a missing feature or something broken for you, we&#39;d love to have you help fix it.</p>
+<p>To modify the ViteJS Plugin or GraphQL Codegen Plugin run &quot;pnpm dev:codegen&quot;</p>
+<p>To modify gFetch run &quot;pnpm dev&quot;</p>
+<hr>
+<h3 id="roadmap">Roadmap</h3>
+<ul>
+<li><p>Clean up repo</p>
+<ul>
+<li>Better CI/CD tools<ul>
+<li>Auto Release and Versioning</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>package.json exports cleaned up</li>
+<li>move codegen build files out of codegen folder</li>
+<li>Better organization</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Subscriptions</p>
+<ul>
+<li>We don&#39;t use subscriptions, so I&#39;m not sure what the process is. This is an open opportunity</li>
+</ul>
+<ul>
+<li>Will need modifications to the GraphQL Codegen Plugin, and gFetch</li>
+</ul>
+</li>
+<li><p>Tests</p>
+<ul>
+<li>We don&#39;t have any and tbh I&#39;m not sure what to test here or how,</li>
+</ul>
+</li>
+<li><p>Update Cache from Mutation</p>
+</li>
+<li><p>Better / smarter caching</p>
+</li>
+</ul>
+<!-- HTML_TAG_END --></div></section>
+</main>
+
+
+		<script type="module" data-sveltekit-hydrate="3sovr">
+		import { start } from "/_app/immutable/start-3b060844.js";
+		start({
+			target: document.querySelector('[data-sveltekit-hydrate="3sovr"]').parentNode,
+			paths: {"base":"","assets":""},
+			session: {},
+			route: true,
+			spa: false,
+			trailing_slash: "never",
+			hydrate: {
+				status: 200,
+				error: null,
+				nodes: [0, 2],
+				params: {},
+				routeId: "contributing"
+			}
+		});
+	</script></div>
+	</body>
+</html>
