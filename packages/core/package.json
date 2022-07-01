@@ -4,6 +4,7 @@
 		"url": "https://github.com/leveluptuts/gQuery/issues"
 	},
 	"dependencies": {
+		"@leveluptuts/svelte-toy": "2.0.0",
 		"isomorphic-fetch": "^3.0.0",
 		"just-pascal-case": "^3.0.1",
 		"pascal-case": "^3.1.2"

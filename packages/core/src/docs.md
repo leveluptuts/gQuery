@@ -186,13 +186,13 @@ These dev tools live in your project and can easily be added by making a new com
 
 <script lang="ts">
 	import { getStores } from '@leveluptuts/g-query';
-	import SvelteToy from '@leveluptuts/svelte-toy/Toy.svelte'; // npm install --save @leveluptuts/svelte-toy
+	import { Toy } from '@leveluptuts/svelte-toy'; // npm install --save @leveluptuts/svelte-toy
 
 	const modules = import.meta.globEager('./**/*.gq.ts'); // finds all gq.ts files in the current directory and subdirectories
 	let stores = getStores(modules);
 </script>
 
-<SvelteToy register="{stores}" />
+<Toy register="{stores}" />
 ```
 
 Then you can use them by adding to your project easily. We hide ours in production and you probably should as well.

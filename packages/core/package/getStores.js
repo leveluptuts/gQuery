@@ -1,12 +1,12 @@
 export function getStores(modules) {
     return Object.keys(modules)
         .map((key) => {
-        let filteredMods = Object.keys(modules[key])
+        const filteredMods = Object.keys(modules[key])
             .map((nKey) => {
-            if (typeof modules[key][nKey] === "object" &&
-                !nKey.includes("Doc") &&
-                modules[key][nKey].hasOwnProperty("subscribe")) {
-                let temp = {};
+            if (typeof modules[key][nKey] === 'object' &&
+                !nKey.includes('Doc') &&
+                modules[key][nKey].hasOwnProperty('subscribe')) {
+                const temp = {};
                 temp[nKey] = modules[key][nKey];
                 return temp;
             }
