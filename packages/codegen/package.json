@@ -17,7 +17,7 @@
 		"graphql": "^16.0.0"
 	},
 	"scripts": {
-		"build": "esbuild index.ts --platform=node --bundle --format=esm --outfile=index.js",
+		"build": "tsc",
 		"check": "tsc --no-emit",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

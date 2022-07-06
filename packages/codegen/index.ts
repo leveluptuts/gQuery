@@ -55,7 +55,7 @@ export async function get${pascalName}({ fetch, variables }: GGetParameters<${op
 	// Fresh is by default false so that it defaults to pulling from cache
 	// The user can pass in fresh: true to bypass the cache.
 
-	if (data?.status === 'INITIAL' || fresh) {
+	if (data?.status !== 'LOADED' || fresh) {
 		${name}.set({ ...data, status: 'LOADING' })
 		data = await g.fetch<${op}>({
 			queries: [{ query: ${pascalName}Doc, variables }],

@@ -16,3 +16,11 @@ export function getStores(modules) {
     })
         .reduce((acc, val) => acc.concat(val), []);
 }
+export function replenishStores(modules) {
+    if (window === null || window === void 0 ? void 0 : window.SERVER_DATA) {
+        const mods = getStores(modules);
+        mods.forEach((mod) => {
+            mod[Object.keys(mod)[0]].set(window === null || window === void 0 ? void 0 : window.SERVER_DATA[Object.keys(mod)[0]]);
+        });
+    }
+}
