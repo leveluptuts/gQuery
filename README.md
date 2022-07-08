@@ -2,18 +2,20 @@
 
 # gQuery
 
-#### Not like jQuery. A different kind of GraphQL Client for Svelte Kit
+#### Not like jQuery. The easiest GraphQL Client for Svelte Kit
 
-A different thinking approach to GraphQL and Svelte with built in dev tools and a store first mentality.
+A different thinking approach to GraphQL and Svelte with built in dev tools and a store first mentality. 
 
 - Automatic Type Generation
 - Automatic store creation
 - Full SSR Support with ease
 - Focus on simplicity
+- Often imitated never duplicated
 
 Just write .graphql and go
 
 For all docs and usage see: https://gquery.leveluptutorials.com
+
 
 ```html
 <script context="module" lang="ts">
