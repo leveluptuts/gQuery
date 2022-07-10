@@ -725,9 +725,12 @@ function create_client({ target, session, base, trailing_slash }) {
 				const root = document.body;
 				const tabindex = root.getAttribute('tabindex');
 
-				getSelection()?.removeAllRanges();
 				root.tabIndex = -1;
 				root.focus({ preventScroll: true });
+
+				setTimeout(() => {
+					getSelection()?.removeAllRanges();
+				});
 
 				// restore `tabindex` as to prevent `root` from stealing input from elements
 				if (tabindex !== null) {
@@ -1140,7 +1143,11 @@ function create_client({ target, session, base, trailing_slash }) {
 							props = res.status === 204 ? {} : await res.json();
 						} else {
 							status = res.status;
-							error = new Error('Failed to load data');
+							try {
+								error = await res.json();
+							} catch (e) {
+								error = new Error('Failed to load data');
+							}
 						}
 					}
 
