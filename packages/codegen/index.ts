@@ -46,7 +46,7 @@ export const ${name} = writable<GFetchReturnWithErrors<${op}>>({
 })
 
 
-export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, { fresh = false, update = true }: GCacheFunctionOptions = {}) {
+export async function get${pascalName}({ fetch, variables }: GGetParameters<${opv}>, { fresh = true, update = true }: GCacheFunctionOptions = {}) {
 	${config.debug ? 'console.log(`❓ gFetch Debug - Fetching fresh data from get${pascalName}`)' : ''}
 
 	let data = get(${name})
