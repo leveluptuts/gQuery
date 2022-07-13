@@ -3,6 +3,7 @@
 	"dependencies": {
 		"@graphql-codegen/plugin-helpers": "^2.3.1",
 		"@graphql-codegen/visitor-plugin-common": "^2.5.1",
+		"graphql": "^16.2.0",
 		"just-pascal-case": "^3.0.1"
 	},
 	"description": "",
@@ -13,9 +14,6 @@
 	"license": "ISC",
 	"main": "index.js",
 	"name": "@leveluptuts/g-query-codegen",
-	"peerDependencies": {
-		"graphql": "^16.0.0"
-	},
 	"scripts": {
 		"build": "tsc",
 		"check": "tsc --no-emit",

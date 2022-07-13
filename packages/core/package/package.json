@@ -5,20 +5,21 @@
   },
   "dependencies": {
     "@leveluptuts/svelte-toy": "2.0.0",
+    "graphql": "^16.2.0",
     "isomorphic-fetch": "^3.0.0",
     "just-pascal-case": "^3.0.1",
     "pascal-case": "^3.1.2"
   },
   "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.3.0",
-    "@graphql-codegen/import-types-preset": "^2.1.8",
-    "@graphql-codegen/near-operation-file-preset": "^2.2.2",
-    "@graphql-codegen/plugin-helpers": "^2.3.1",
-    "@graphql-codegen/typescript-operations": "^2.2.1",
-    "@graphql-codegen/visitor-plugin-common": "^2.5.1",
-    "@leveluptuts/g-query-codegen": "workspace:^1.0.0",
-    "@leveluptuts/g-query-vite-plugin": "workspace:^1.0.0",
+    "@graphql-codegen/cli": "2.3.1",
+    "@graphql-codegen/import-types-preset": "2.1.8",
+    "@graphql-codegen/near-operation-file-preset": "2.2.2",
+    "@graphql-codegen/plugin-helpers": "2.3.1",
+    "@graphql-codegen/typescript-operations": "2.2.1",
+    "@graphql-codegen/visitor-plugin-common": "2.5.1",
+    "@leveluptuts/g-query-codegen": "workspace:1.0.0",
+    "@leveluptuts/g-query-vite-plugin": "workspace:1.0.0",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/adapter-static": "^1.0.0-next.34",
     "@sveltejs/kit": "next",
@@ -45,9 +46,6 @@
   ],
   "license": "ISC",
   "name": "@leveluptuts/g-query",
-  "peerDependencies": {
-    "graphql": "^16.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leveluptuts/gQuery.git"
