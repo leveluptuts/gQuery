@@ -4,8 +4,5 @@
 	"keywords": [],
 	"license": "ISC",
 	"name": "@leveluptuts/gquery-main",
-	"scripts": {
-		"clean": "pnpm recursive exec -- rm -rf node_modules; rm -rf node_modules; rm -r pnpm-lock.yaml"
-	},
 	"version": "1.0.0"
 }

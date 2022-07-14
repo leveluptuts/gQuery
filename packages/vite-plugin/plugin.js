@@ -2,7 +2,7 @@ import { concatAST, Kind } from 'graphql';
 import { oldVisit } from '@graphql-codegen/plugin-helpers';
 import { ClientSideBaseVisitor } from '@graphql-codegen/visitor-plugin-common';
 import pascalCase from 'just-pascal-case';
-function create_mutation_string({ name, op, opv, pascalName }) {
+export function create_mutation_string({ name, op, opv, pascalName }) {
     return `
 export const ${name} = ({ variables }: GSubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
@@ -12,7 +12,7 @@ Promise<GFetchReturnWithErrors<${op}>> =>
 	})
 `;
 }
-function create_query_string({ name, op, opv, pascalName, config }) {
+export function create_query_string({ name, op, opv, pascalName, config }) {
     return `
 export const ${name} = writable<GFetchReturnWithErrors<${op}>>({
 	errors: [],
@@ -105,4 +105,4 @@ export const plugin = (schema, documents, config) => {
 // - add option to force update of cache. ie getUserTutorials({update: true})
 // if update.true is not set, then it will only update if the cache is empty
 // Add option to store in local storage or better yet, store in local storage by default
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=plugin.js.map

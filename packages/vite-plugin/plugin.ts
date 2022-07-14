@@ -27,7 +27,7 @@ export interface CreateStringOptions {
 	config: gQueryOptions;
 }
 
-function create_mutation_string({ name, op, opv, pascalName }: CreateStringOptions) {
+export function create_mutation_string({ name, op, opv, pascalName }: CreateStringOptions) {
 	return `
 export const ${name} = ({ variables }: GSubscribeWrapperArgs<${opv}>):
 Promise<GFetchReturnWithErrors<${op}>> =>
@@ -38,7 +38,7 @@ Promise<GFetchReturnWithErrors<${op}>> =>
 `;
 }
 
-function create_query_string({ name, op, opv, pascalName, config }: CreateStringOptions) {
+export function create_query_string({ name, op, opv, pascalName, config }: CreateStringOptions) {
 	return `
 export const ${name} = writable<GFetchReturnWithErrors<${op}>>({
 	errors: [],
@@ -146,7 +146,7 @@ export const plugin: PluginFunction = (
 		prepend: [...imports, ...visitor.getImports()],
 		content: [
 			visitor.fragments,
-			...visitorResult.definitions.filter((t: string) => typeof t == 'string'),
+			...visitorResult.definitions.filter((t) => typeof t == 'string'),
 			ops
 		].join('\n')
 	};
