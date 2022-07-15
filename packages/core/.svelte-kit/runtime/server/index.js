@@ -145,12 +145,6 @@ function is_pojo(body) {
 	return true;
 }
 
-/** @param {import('types').RequestEvent} event */
-function normalize_request_method(event) {
-	const method = event.request.method.toLowerCase();
-	return method === 'delete' ? 'del' : method; // 'delete' is a reserved word
-}
-
 /**
  * Serialize an error into a JSON string, by copying its `name`, `message`
  * and (in dev) `stack`, plus any custom properties, plus recursively
@@ -190,6 +184,19 @@ function clone_error(error, get_stack) {
 	}
 
 	return object;
+}
+
+// TODO: Remove for 1.0
+/** @param {Record<string, any>} mod */
+function check_method_names(mod) {
+	['get', 'post', 'put', 'patch', 'del'].forEach((m) => {
+		if (m in mod) {
+			const replacement = m === 'del' ? 'DELETE' : m.toUpperCase();
+			throw Error(
+				`Endpoint method "${m}" has changed to "${replacement}". See https://github.com/sveltejs/kit/discussions/5359 for more information.`
+			);
+		}
+	});
 }
 
 /** @type {import('types').SSRErrorPage} */
@@ -238,24 +245,25 @@ function is_text(content_type) {
  * @returns {Promise<Response>}
  */
 async function render_endpoint(event, mod, options) {
-	const method = normalize_request_method(event);
+	const { method } = event.request;
+
+	check_method_names(mod);
 
 	/** @type {import('types').RequestHandler} */
 	let handler = mod[method];
 
-	if (!handler && method === 'head') {
-		handler = mod.get;
+	if (!handler && method === 'HEAD') {
+		handler = mod.GET;
 	}
 
 	if (!handler) {
 		const allowed = [];
 
-		for (const method in ['get', 'post', 'put', 'patch']) {
-			if (mod[method]) allowed.push(method.toUpperCase());
+		for (const method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']) {
+			if (mod[method]) allowed.push(method);
 		}
 
-		if (mod.del) allowed.push('DELETE');
-		if (mod.get || mod.head) allowed.push('HEAD');
+		if (mod.GET || mod.HEAD) allowed.push('HEAD');
 
 		return event.request.headers.get('x-sveltekit-load')
 			? // TODO would be nice to avoid these requests altogether,
@@ -263,7 +271,7 @@ async function render_endpoint(event, mod, options) {
 			  new Response(undefined, {
 					status: 204
 			  })
-			: new Response(`${event.request.method} method not allowed`, {
+			: new Response(`${method} method not allowed`, {
 					status: 405,
 					headers: {
 						// https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405
@@ -327,7 +335,7 @@ async function render_endpoint(event, mod, options) {
 	}
 
 	return new Response(
-		method !== 'head' && !bodyless_status_codes.has(status) ? normalized_body : undefined,
+		method !== 'HEAD' && !bodyless_status_codes.has(status) ? normalized_body : undefined,
 		{
 			status,
 			headers
@@ -2620,13 +2628,15 @@ async function load_shadow_data(route, event, options, prerender) {
 	try {
 		const mod = await route.shadow();
 
-		if (prerender && (mod.post || mod.put || mod.del || mod.patch)) {
+		check_method_names(mod);
+
+		if (prerender && (mod.POST || mod.PUT || mod.DELETE || mod.PATCH)) {
 			throw new Error('Cannot prerender pages that have endpoints with mutative methods');
 		}
 
-		const method = normalize_request_method(event);
-		const is_get = method === 'head' || method === 'get';
-		const handler = method === 'head' ? mod.head || mod.get : mod[method];
+		const { method } = event.request;
+		const is_get = method === 'HEAD' || method === 'GET';
+		const handler = method === 'HEAD' ? mod.HEAD || mod.GET : mod[method];
 
 		if (!handler && !is_get) {
 			return {
@@ -2673,7 +2683,7 @@ async function load_shadow_data(route, event, options, prerender) {
 			data.body = body;
 		}
 
-		const get = (method === 'head' && mod.head) || mod.get;
+		const get = (method === 'HEAD' && mod.HEAD) || mod.GET;
 		if (get) {
 			const { status, headers, body } = validate_shadow_output(await get(event));
 			add_cookies(/** @type {string[]} */ (data.cookies), headers);
