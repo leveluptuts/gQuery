@@ -54,7 +54,6 @@
   "version": "0.5.0",
   "exports": {
     "./package.json": "./package.json",
-    "./.DS_Store": "./.DS_Store",
     "./GQ.svelte": "./GQ.svelte",
     "./gFetch": "./gFetch.js",
     "./getStores": "./getStores.js",
