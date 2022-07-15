@@ -192,6 +192,11 @@ function clone_error(error, get_stack) {
 	return object;
 }
 
+/** @type {import('types').SSRErrorPage} */
+const GENERIC_ERROR = {
+	id: '__error'
+};
+
 /** @param {string} body */
 function error(body) {
 	return new Response(body, {
@@ -1369,6 +1374,14 @@ async function render_response({
 	}
 
 	if (resolve_opts.ssr) {
+		const leaf = /** @type {import('./types.js').Loaded} */ (branch.at(-1));
+
+		if (leaf.loaded.status) {
+			// explicit status returned from `load` or a page endpoint trumps
+			// initial status
+			status = leaf.loaded.status;
+		}
+
 		for (const { node, props, loaded, fetched, uses_credentials } of branch) {
 			if (node.imports) {
 				node.imports.forEach((url) => modulepreloads.add(url));
@@ -2096,10 +2109,14 @@ var parseString_1 = setCookie.exports.parseString = parseString;
 var splitCookiesString_1 = setCookie.exports.splitCookiesString = splitCookiesString;
 
 /**
- * @param {import('types').LoadOutput} loaded
+ * @param {import('types').LoadOutput | void} loaded
  * @returns {import('types').NormalizedLoadOutput}
  */
 function normalize(loaded) {
+	if (!loaded) {
+		return {};
+	}
+
 	// TODO remove for 1.0
 	// @ts-expect-error
 	if (loaded.fallthrough) {
@@ -2119,7 +2136,10 @@ function normalize(loaded) {
 		const status = loaded.status;
 
 		if (!loaded.error && has_error_status) {
-			return { status: status || 500, error: new Error() };
+			return {
+				status: status || 500,
+				error: new Error(`${status}`)
+			};
 		}
 
 		const error = typeof loaded.error === 'string' ? new Error(loaded.error) : loaded.error;
@@ -2205,7 +2225,7 @@ function path_matches(path, constraint) {
  *   event: import('types').RequestEvent;
  *   options: import('types').SSROptions;
  *   state: import('types').SSRState;
- *   route: import('types').SSRPage | null;
+ *   route: import('types').SSRPage | import('types').SSRErrorPage;
  *   node: import('types').SSRNode;
  *   $session: any;
  *   stuff: Record<string, any>;
@@ -2241,7 +2261,7 @@ async function load_node({
 	/** @type {import('set-cookie-parser').Cookie[]} */
 	const new_cookies = [];
 
-	/** @type {import('types').LoadOutput} */
+	/** @type {import('types').NormalizedLoadOutput} */
 	let loaded;
 
 	const should_prerender = node.module.prerender ?? options.prerender.default;
@@ -2264,12 +2284,10 @@ async function load_node({
 
 	if (shadow.error) {
 		loaded = {
-			status: shadow.status,
 			error: shadow.error
 		};
 	} else if (shadow.redirect) {
 		loaded = {
-			status: shadow.status,
 			redirect: shadow.redirect
 		};
 	} else if (module.load) {
@@ -2537,7 +2555,7 @@ async function load_node({
 				return proxy;
 			},
 			stuff: { ...stuff },
-			status: is_error ? status ?? null : null,
+			status: (is_error ? status : shadow.status) ?? null,
 			error: is_error ? error ?? null : null
 		};
 
@@ -2550,12 +2568,7 @@ async function load_node({
 			});
 		}
 
-		loaded = await module.load.call(null, load_input);
-
-		if (!loaded) {
-			// TODO do we still want to enforce this now that there's no fallthrough?
-			throw new Error(`load function must return a value${options.dev ? ` (${node.file})` : ''}`);
-		}
+		loaded = normalize(await module.load.call(null, load_input));
 	} else if (shadow.body) {
 		loaded = {
 			props: shadow.body
@@ -2563,6 +2576,8 @@ async function load_node({
 	} else {
 		loaded = {};
 	}
+
+	loaded.status = loaded.status ?? shadow.status;
 
 	// generate __data.json files when prerendering
 	if (shadow.body && state.prerendering) {
@@ -2579,7 +2594,7 @@ async function load_node({
 	return {
 		node,
 		props: shadow.body,
-		loaded: normalize(loaded),
+		loaded,
 		stuff: loaded.stuff || stuff,
 		fetched,
 		set_cookie_headers: new_cookies.map((new_cookie) => {
@@ -2622,7 +2637,7 @@ async function load_shadow_data(route, event, options, prerender) {
 
 		/** @type {import('types').ShadowData} */
 		const data = {
-			status: 200,
+			status: undefined,
 			cookies: [],
 			body: {}
 		};
@@ -2662,13 +2677,13 @@ async function load_shadow_data(route, event, options, prerender) {
 		if (get) {
 			const { status, headers, body } = validate_shadow_output(await get(event));
 			add_cookies(/** @type {string[]} */ (data.cookies), headers);
-			data.status = status;
 
 			if (body instanceof Error) {
 				if (status < 400) {
 					data.status = 500;
 					data.error = new Error('A non-error status code was returned with an error body');
 				} else {
+					data.status = status;
 					data.error = body;
 				}
 
@@ -2676,11 +2691,13 @@ async function load_shadow_data(route, event, options, prerender) {
 			}
 
 			if (status >= 400) {
+				data.status = status;
 				data.error = new Error('Failed to load data');
 				return data;
 			}
 
 			if (status >= 300) {
+				data.status = status;
 				data.redirect = /** @type {string} */ (
 					headers instanceof Headers ? headers.get('location') : headers.location
 				);
@@ -2790,7 +2807,7 @@ async function respond_with_error({
 					event,
 					options,
 					state,
-					route: null,
+					route: GENERIC_ERROR,
 					node: default_layout,
 					$session,
 					stuff: {},
@@ -2799,12 +2816,16 @@ async function respond_with_error({
 				})
 			);
 
+			if (layout_loaded.loaded.error) {
+				throw layout_loaded.loaded.error;
+			}
+
 			const error_loaded = /** @type {Loaded} */ (
 				await load_node({
 					event,
 					options,
 					state,
-					route: null,
+					route: GENERIC_ERROR,
 					node: default_error,
 					$session,
 					stuff: layout_loaded ? layout_loaded.stuff : {},
@@ -2969,7 +2990,8 @@ async function respond$1(opts) {
 					}
 
 					if (loaded.loaded.error) {
-						({ status, error } = loaded.loaded);
+						error = loaded.loaded.error;
+						status = loaded.loaded.status ?? 500;
 					}
 				} catch (err) {
 					const e = coalesce_to_error(err);
@@ -3448,6 +3470,12 @@ async function respond(request, options, state) {
 					}
 				}
 
+				if (state.initiator === GENERIC_ERROR) {
+					return new Response('Internal Server Error', {
+						status: 500
+					});
+				}
+
 				// if this request came direct from the user, rather than
 				// via a `fetch` in a `load`, render a 404 page
 				if (!state.initiator) {
@@ -3502,6 +3530,7 @@ async function respond(request, options, state) {
 			});
 		}
 
+		// TODO is this necessary? should we just return a plain 500 at this point?
 		try {
 			const $session = await options.hooks.getSession(event);
 			return await respond_with_error({
