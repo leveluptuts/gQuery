@@ -105,28 +105,6 @@ function lowercase_keys(obj) {
 	return clone;
 }
 
-/** @param {Record<string, string>} params */
-function decode_params(params) {
-	for (const key in params) {
-		// input has already been decoded by decodeURI
-		// now handle the rest that decodeURIComponent would do
-		params[key] = params[key]
-			.replace(/%23/g, '#')
-			.replace(/%3[Bb]/g, ';')
-			.replace(/%2[Cc]/g, ',')
-			.replace(/%2[Ff]/g, '/')
-			.replace(/%3[Ff]/g, '?')
-			.replace(/%3[Aa]/g, ':')
-			.replace(/%40/g, '@')
-			.replace(/%26/g, '&')
-			.replace(/%3[Dd]/g, '=')
-			.replace(/%2[Bb]/g, '+')
-			.replace(/%24/g, '$');
-	}
-
-	return params;
-}
-
 /** @param {any} body */
 function is_pojo(body) {
 	if (typeof body !== 'object') return false;
@@ -165,8 +143,6 @@ function clone_error(error, get_stack) {
 	const {
 		name,
 		message,
-		// this should constitute 'using' a var, since it affects `custom`
-		// eslint-disable-next-line
 		stack,
 		// @ts-expect-error i guess typescript doesn't know about error.cause yet
 		cause,
@@ -1292,6 +1268,28 @@ function normalize_path(path, trailing_slash) {
 	return path;
 }
 
+/** @param {Record<string, string>} params */
+function decode_params(params) {
+	for (const key in params) {
+		// input has already been decoded by decodeURI
+		// now handle the rest that decodeURIComponent would do
+		params[key] = params[key]
+			.replace(/%23/g, '#')
+			.replace(/%3[Bb]/g, ';')
+			.replace(/%2[Cc]/g, ',')
+			.replace(/%2[Ff]/g, '/')
+			.replace(/%3[Ff]/g, '?')
+			.replace(/%3[Aa]/g, ':')
+			.replace(/%40/g, '@')
+			.replace(/%26/g, '&')
+			.replace(/%3[Dd]/g, '=')
+			.replace(/%2[Bb]/g, '+')
+			.replace(/%24/g, '$');
+	}
+
+	return params;
+}
+
 class LoadURL extends URL {
 	/** @returns {string} */
 	get hash() {
@@ -1377,7 +1375,9 @@ async function render_response({
 	/** @type {import('types').NormalizedLoadOutputCache | undefined} */
 	let cache;
 
-	if (error) {
+	const stack = error?.stack;
+
+	if (options.dev && error) {
 		error.stack = options.get_stack(error);
 	}
 
@@ -1412,20 +1412,15 @@ async function render_response({
 		}
 
 		const session = writable($session);
+		// Even if $session isn't accessed, it still ends up serialized in the rendered HTML
+		is_private = is_private || (cache?.private ?? (!!$session && Object.keys($session).length > 0));
 
 		/** @type {Record<string, any>} */
 		const props = {
 			stores: {
 				page: writable(null),
 				navigating: writable(null),
-				/** @type {import('svelte/store').Writable<App.Session>} */
-				session: {
-					...session,
-					subscribe: (fn) => {
-						is_private = cache?.private ?? true;
-						return session.subscribe(fn);
-					}
-				},
+				session,
 				updated
 			},
 			/** @type {import('types').Page} */
@@ -1601,9 +1596,12 @@ async function render_response({
 	const assets =
 		options.paths.assets || (segments.length > 0 ? segments.map(() => '..').join('/') : '.');
 
-	const html = await resolve_opts.transformPage({
-		html: options.template({ head, body, assets, nonce: /** @type {string} */ (csp.nonce) })
-	});
+	// TODO flush chunks as early as we can
+	const html =
+		(await resolve_opts.transformPageChunk({
+			html: options.template({ head, body, assets, nonce: /** @type {string} */ (csp.nonce) }),
+			done: true
+		})) || '';
 
 	const headers = new Headers({
 		'content-type': 'text/html',
@@ -1623,6 +1621,11 @@ async function render_response({
 		if (report_only_header) {
 			headers.set('content-security-policy-report-only', report_only_header);
 		}
+	}
+
+	if (options.dev && error) {
+		// reset stack, otherwise it may be 'fixed' a second time
+		error.stack = stack;
 	}
 
 	return new Response(html, {
@@ -3214,6 +3217,8 @@ function exec(match, names, types, matchers) {
 	return params;
 }
 
+/* global __SVELTEKIT_ADAPTER_NAME__ */
+
 const DATA_SUFFIX = '/__data.json';
 
 /** @param {{ html: string }} opts */
@@ -3321,9 +3326,7 @@ async function respond(request, options, state) {
 		get clientAddress() {
 			if (!state.getClientAddress) {
 				throw new Error(
-					`${
-						import.meta.env.VITE_SVELTEKIT_ADAPTER_NAME
-					} does not specify getClientAddress. Please raise an issue`
+					`${__SVELTEKIT_ADAPTER_NAME__} does not specify getClientAddress. Please raise an issue`
 				);
 			}
 
@@ -3377,7 +3380,7 @@ async function respond(request, options, state) {
 	/** @type {import('types').RequiredResolveOptions} */
 	let resolve_opts = {
 		ssr: true,
-		transformPage: default_transform
+		transformPageChunk: default_transform
 	};
 
 	// TODO match route before calling handle?
@@ -3387,9 +3390,17 @@ async function respond(request, options, state) {
 			event,
 			resolve: async (event, opts) => {
 				if (opts) {
+					// TODO remove for 1.0
+					// @ts-expect-error
+					if (opts.transformPage) {
+						throw new Error(
+							'transformPage has been replaced by transformPageChunk — see https://github.com/sveltejs/kit/pull/5657 for more information'
+						);
+					}
+
 					resolve_opts = {
 						ssr: opts.ssr !== false,
-						transformPage: opts.transformPage || default_transform
+						transformPageChunk: opts.transformPageChunk || default_transform
 					};
 				}
 

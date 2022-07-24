@@ -117,6 +117,28 @@ function normalize_path(path, trailing_slash) {
 	return path;
 }
 
+/** @param {Record<string, string>} params */
+function decode_params(params) {
+	for (const key in params) {
+		// input has already been decoded by decodeURI
+		// now handle the rest that decodeURIComponent would do
+		params[key] = params[key]
+			.replace(/%23/g, '#')
+			.replace(/%3[Bb]/g, ';')
+			.replace(/%2[Cc]/g, ',')
+			.replace(/%2[Ff]/g, '/')
+			.replace(/%3[Ff]/g, '?')
+			.replace(/%3[Aa]/g, ':')
+			.replace(/%40/g, '@')
+			.replace(/%26/g, '&')
+			.replace(/%3[Dd]/g, '=')
+			.replace(/%2[Bb]/g, '+')
+			.replace(/%24/g, '$');
+	}
+
+	return params;
+}
+
 class LoadURL extends URL {
 	/** @returns {string} */
 	get hash() {
@@ -125,6 +147,8 @@ class LoadURL extends URL {
 		);
 	}
 }
+
+/* global __SVELTEKIT_APP_VERSION__, __SVELTEKIT_APP_VERSION_FILE__, __SVELTEKIT_APP_VERSION_POLL_INTERVAL__ */
 
 /** @param {HTMLDocument} doc */
 function get_base_uri(doc) {
@@ -193,10 +217,7 @@ function notifiable_store(value) {
 function create_updated_store() {
 	const { set, subscribe } = writable(false);
 
-	const interval = +(
-		/** @type {string} */ (import.meta.env.VITE_SVELTEKIT_APP_VERSION_POLL_INTERVAL)
-	);
-	const initial = import.meta.env.VITE_SVELTEKIT_APP_VERSION;
+	const interval = __SVELTEKIT_APP_VERSION_POLL_INTERVAL__;
 
 	/** @type {NodeJS.Timeout} */
 	let timeout;
@@ -208,9 +229,7 @@ function create_updated_store() {
 
 		if (interval) timeout = setTimeout(check, interval);
 
-		const file = import.meta.env.VITE_SVELTEKIT_APP_VERSION_FILE;
-
-		const res = await fetch(`${assets}/${file}`, {
+		const res = await fetch(`${assets}/${__SVELTEKIT_APP_VERSION_FILE__}`, {
 			headers: {
 				pragma: 'no-cache',
 				'cache-control': 'no-cache'
@@ -219,7 +238,7 @@ function create_updated_store() {
 
 		if (res.ok) {
 			const { version } = await res.json();
-			const updated = version !== initial;
+			const updated = version !== __SVELTEKIT_APP_VERSION__;
 
 			if (updated) {
 				set(true);
@@ -670,6 +689,10 @@ function create_client({ target, session, base, trailing_slash }) {
 			await native_navigation(url);
 			return false; // unnecessary, but TypeScript prefers it this way
 		}
+
+		// if this is an internal navigation intent, use the normalized
+		// URL for the rest of the function
+		url = intent?.url || url;
 
 		// abort if user navigated during update
 		if (token !== current_token) return false;
@@ -1324,9 +1347,12 @@ function create_client({ target, session, base, trailing_slash }) {
 			const params = route.exec(path);
 
 			if (params) {
-				const id = normalize_path(url.pathname, trailing_slash) + url.search;
+				const normalized = new URL(
+					url.origin + normalize_path(url.pathname, trailing_slash) + url.search + url.hash
+				);
+				const id = normalized.pathname + normalized.search;
 				/** @type {import('./types').NavigationIntent} */
-				const intent = { id, route, params, url };
+				const intent = { id, route, params: decode_params(params), url: normalized };
 				return intent;
 			}
 		}
@@ -1363,9 +1389,6 @@ function create_client({ target, session, base, trailing_slash }) {
 			return;
 		}
 
-		const pathname = normalize_path(url.pathname, trailing_slash);
-		const normalized = new URL(url.origin + pathname + url.search + url.hash);
-
 		update_scroll_positions(current_history_index);
 
 		accepted();
@@ -1373,12 +1396,12 @@ function create_client({ target, session, base, trailing_slash }) {
 		if (started) {
 			stores.navigating.set({
 				from: current.url,
-				to: normalized
+				to: url
 			});
 		}
 
 		await update(
-			normalized,
+			url,
 			redirect_chain,
 			false,
 			{
@@ -1387,7 +1410,7 @@ function create_client({ target, session, base, trailing_slash }) {
 				details
 			},
 			() => {
-				const navigation = { from, to: normalized };
+				const navigation = { from, to: url };
 				callbacks.after_navigate.forEach((fn) => fn(navigation));
 
 				stores.navigating.set(null);
@@ -1650,6 +1673,23 @@ function create_client({ target, session, base, trailing_slash }) {
 						'',
 						location.href
 					);
+				}
+			});
+
+			// fix link[rel=icon], because browsers will occasionally try to load relative
+			// URLs after a pushState/replaceState, resulting in a 404 — see
+			// https://github.com/sveltejs/kit/issues/3748#issuecomment-1125980897
+			for (const link of document.querySelectorAll('link')) {
+				if (link.rel === 'icon') link.href = link.href;
+			}
+
+			addEventListener('pageshow', (event) => {
+				// If the user navigates to another site and then uses the back button and
+				// bfcache hits, we need to set navigating to null, the site doesn't know
+				// the navigation away from it was successful.
+				// Info about bfcache here: https://web.dev/bfcache
+				if (event.persisted) {
+					stores.navigating.set(null);
 				}
 			});
 		},
