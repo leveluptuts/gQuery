@@ -75,7 +75,6 @@ export type AuthorProfile = {
 
 export type AuthorSocial = {
   __typename?: 'AuthorSocial';
-  facebook?: Maybe<Scalars['String']>;
   homepage?: Maybe<Scalars['String']>;
   instagram?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
@@ -417,7 +416,6 @@ export type Mutation = {
   updateUserEmail?: Maybe<User>;
   updateUserPhoto?: Maybe<User>;
   updateUserProfile?: Maybe<User>;
-  updateUserSocial?: Maybe<User>;
   upgradeSubscription?: Maybe<SubscriptionReturn>;
   verifyAuthentication: Scalars['Boolean'];
   verifyEmail: Scalars['Boolean'];
@@ -896,11 +894,6 @@ export type MutationUpdateUserPhotoArgs = {
 
 export type MutationUpdateUserProfileArgs = {
   profile: ProfileInput;
-};
-
-
-export type MutationUpdateUserSocialArgs = {
-  social: SocialInput;
 };
 
 
@@ -1609,7 +1602,6 @@ export type Settings = {
 
 export type Social = {
   __typename?: 'Social';
-  facebook?: Maybe<Scalars['String']>;
   homepage?: Maybe<Scalars['String']>;
   instagram?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
@@ -1623,7 +1615,6 @@ export type SocialCardInput = {
 };
 
 export type SocialInput = {
-  facebook?: InputMaybe<Scalars['String']>;
   homepage?: InputMaybe<Scalars['String']>;
   instagram?: InputMaybe<Scalars['String']>;
   twitter?: InputMaybe<Scalars['String']>;

@@ -1,5 +1,5 @@
 <script>
-	import source from '../contributing.md?raw';
+	import source from '$lib/contributing.md?raw';
 
 	import { marked } from 'marked';
 	import Prism from 'prismjs';
