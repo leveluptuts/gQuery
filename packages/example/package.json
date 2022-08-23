@@ -4,7 +4,7 @@
 		"@leveluptuts/svelte-toy": "2.0.3",
 		"@lukeed/uuid": "^2.0.0",
 		"cookie": "^0.5.0",
-		"graphql": "16.5.0",
+		"graphql": "16.6.0",
 		"graphql-tag": "^2.12.6"
 	},
 	"devDependencies": {
@@ -30,7 +30,7 @@
 	},
 	"name": "gq-demo",
 	"peerDependencies": {
-		"graphql": "16.5.0"
+		"graphql": "16.6.0"
 	},
 	"scripts": {
 		"build": "vite build",
