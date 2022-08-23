@@ -1,65 +1,65 @@
 {
-  "author": "Scott Tolinski",
-  "bugs": {
-    "url": "https://github.com/leveluptuts/gQuery/issues"
-  },
-  "dependencies": {
-    "@leveluptuts/svelte-toy": "2.0.3",
-    "graphql": "16.5.0",
-    "isomorphic-fetch": "^3.0.0",
-    "just-pascal-case": "^3.1.1",
-    "pascal-case": "^3.1.2"
-  },
-  "description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
-  "devDependencies": {
-    "@graphql-codegen/cli": "2.8.1",
-    "@graphql-codegen/import-types-preset": "2.2.1",
-    "@graphql-codegen/near-operation-file-preset": "2.3.1",
-    "@graphql-codegen/plugin-helpers": "2.5.0",
-    "@graphql-codegen/typescript-operations": "2.5.1",
-    "@graphql-codegen/visitor-plugin-common": "2.11.1",
-    "@leveluptuts/g-query-codegen": "workspace:*",
-    "@leveluptuts/g-query-vite-plugin": "workspace:*",
-    "@sveltejs/adapter-auto": "1.0.0-next.64",
-    "@sveltejs/adapter-static": "1.0.0-next.39",
-    "@sveltejs/kit": "1.0.0-next.411",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
-    "camel-case": "^4.1.2",
-    "eslint": "^8.21.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-svelte3": "^4.0.0",
-    "marked": "^4.0.17",
-    "prettier": "^2.7.1",
-    "prettier-plugin-svelte": "^2.7.0",
-    "prismjs": "^1.28.0",
-    "svelte": "3.49.0",
-    "svelte-check": "^2.7.1",
-    "svelte-preprocess": "^4.10.6",
-    "svelte2tsx": "^0.5.12",
-    "tslib": "^2.3.1",
-    "typescript": "^4.7.4"
-  },
-  "homepage": "https://github.com/leveluptuts/gQuery#readme",
-  "keywords": [
-    "graphql"
-  ],
-  "license": "ISC",
-  "name": "@leveluptuts/g-query",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/leveluptuts/gQuery.git"
-  },
-  "type": "module",
-  "version": "0.5.0",
-  "exports": {
-    "./package.json": "./package.json",
-    "./GQ.svelte": "./GQ.svelte",
-    "./gFetch": "./gFetch.js",
-    "./getStores": "./getStores.js",
-    ".": "./index.js",
-    "./local": "./local.js",
-    "./utils/format": "./utils/format.js"
-  },
-  "svelte": "./index.js"
+	"author": "Scott Tolinski",
+	"bugs": {
+		"url": "https://github.com/leveluptuts/gQuery/issues"
+	},
+	"dependencies": {
+		"@leveluptuts/svelte-toy": "2.0.3",
+		"graphql": "16.5.0",
+		"isomorphic-fetch": "^3.0.0",
+		"just-pascal-case": "^3.1.1",
+		"pascal-case": "^3.1.2"
+	},
+	"description": "Not like jQuery. A GraphQL Fetcher & Cache for Svelte Kit",
+	"devDependencies": {
+		"@graphql-codegen/cli": "2.8.1",
+		"@graphql-codegen/import-types-preset": "2.2.1",
+		"@graphql-codegen/near-operation-file-preset": "2.3.1",
+		"@graphql-codegen/plugin-helpers": "2.5.0",
+		"@graphql-codegen/typescript-operations": "2.5.1",
+		"@graphql-codegen/visitor-plugin-common": "2.11.1",
+		"@leveluptuts/g-query-codegen": "workspace:*",
+		"@leveluptuts/g-query-vite-plugin": "workspace:*",
+		"@sveltejs/adapter-auto": "1.0.0-next.64",
+		"@sveltejs/adapter-static": "1.0.0-next.39",
+		"@sveltejs/kit": "1.0.0-next.411",
+		"@typescript-eslint/eslint-plugin": "^5.33.0",
+		"@typescript-eslint/parser": "^5.33.0",
+		"camel-case": "^4.1.2",
+		"eslint": "^8.21.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"marked": "^4.0.17",
+		"prettier": "^2.7.1",
+		"prettier-plugin-svelte": "^2.7.0",
+		"prismjs": "git@github.com:stolinski/prism.git",
+		"svelte": "3.49.0",
+		"svelte-check": "^2.7.1",
+		"svelte-preprocess": "^4.10.6",
+		"svelte2tsx": "^0.5.12",
+		"tslib": "^2.3.1",
+		"typescript": "^4.7.4"
+	},
+	"exports": {
+		".": "./index.js",
+		"./GQ.svelte": "./GQ.svelte",
+		"./gFetch": "./gFetch.js",
+		"./getStores": "./getStores.js",
+		"./local": "./local.js",
+		"./package.json": "./package.json",
+		"./utils/format": "./utils/format.js"
+	},
+	"homepage": "https://github.com/leveluptuts/gQuery#readme",
+	"keywords": [
+		"graphql"
+	],
+	"license": "ISC",
+	"name": "@leveluptuts/g-query",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/leveluptuts/gQuery.git"
+	},
+	"svelte": "./index.js",
+	"type": "module",
+	"version": "0.5.0"
 }
