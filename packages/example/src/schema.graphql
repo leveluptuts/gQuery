@@ -466,12 +466,12 @@ type Playlist {
 	downloadSeriesKey: String
 	files: String
 	filesSize: String
-	isPremium: Boolean
+	pro: Boolean
 	length: Int
 	level: Int
 	logo: String
 	order: Int
-	playId: String
+	youtube_playlist_id: String
 	price: String
 	progress: Int
 	releaseDate: String
@@ -497,11 +497,11 @@ input PlaylistInput {
 	downloadSeriesKey: String
 	files: String
 	filesSize: String
-	isPremium: Boolean!
+	pro: Boolean!
 	level: Int!
 	logo: String!
 	order: Int!
-	playId: String
+	youtube_playlist_id: String
 	price: String
 	releaseDate: String!
 	salePrice: String
