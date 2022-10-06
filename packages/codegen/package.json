@@ -12,8 +12,8 @@
 	},
 	"description": "",
 	"devDependencies": {
-		"esbuild": "^0.15.6",
-		"typescript": "^4.8.2"
+		"esbuild": "^0.15.10",
+		"typescript": "^4.8.4"
 	},
 	"exports": {
 		".": "./index.js",
