@@ -11,8 +11,8 @@
 		"@leveluptuts/g-query": "workspace:*",
 		"@leveluptuts/g-query-codegen": "workspace:*",
 		"@leveluptuts/g-query-vite-plugin": "workspace:*",
-		"@sveltejs/adapter-node": "1.0.0-next.96",
-		"@sveltejs/kit": "1.0.0-next.512",
+		"@sveltejs/adapter-node": "1.0.0-next.98",
+		"@sveltejs/kit": "1.0.0-next.516",
 		"@types/cookie": "^0.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.39.0",
 		"@typescript-eslint/parser": "^5.39.0",
@@ -26,7 +26,7 @@
 		"svelte-preprocess": "^4.9.4",
 		"tslib": "^2.3.1",
 		"typescript": "^4.8.4",
-		"vite": "3.1.7"
+		"vite": "3.1.8"
 	},
 	"name": "gq-demo",
 	"peerDependencies": {
