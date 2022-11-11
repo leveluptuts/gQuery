@@ -36,4 +36,6 @@
 	{@html SERVER_DATA_STRING}
 {/if}
 
-<Toy register={filteredStores} top="20%" nub="🎒" />
+{#if devTools}
+	<Toy register={filteredStores} top="20%" nub="🎒" />
+{/if}
