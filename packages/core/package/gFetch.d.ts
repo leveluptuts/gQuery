@@ -27,6 +27,7 @@ declare type Id<T> = T extends infer U
 			[K in keyof U]: U[K];
 	  }
 	: never;
+	
 declare type SpreadTwo<L, R> = Id<
 	Pick<L, Exclude<keyof L, keyof R>> &
 		Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>> &
